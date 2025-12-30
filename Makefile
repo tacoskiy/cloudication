@@ -66,6 +66,7 @@ be:
 # =========================
 migrate:
 	$(COMPOSE) exec backend npx prisma migrate dev
+	$(COMPOSE) exec backend npx prisma generate
 
 generate:
 	$(COMPOSE) exec backend npx prisma generate

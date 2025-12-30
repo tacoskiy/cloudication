@@ -29,7 +29,7 @@ prisma/dev.db-journal
 prisma/.env
 
 # Generated (Prisma Client)
-src/generated/
+generated/
 
 # Docker
 db-data/

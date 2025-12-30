@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import sampleRouter from "./routes/sample";
+
 dotenv.config();
 
 const app = express();
@@ -20,3 +22,5 @@ app.get("/api/hello", (_req, res) => {
     message: "Hello from Express and node.js!"
   });
 });
+
+app.use("/samples", sampleRouter);
