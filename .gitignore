@@ -12,6 +12,7 @@ pnpm-debug.log*
 
 # Next.js
 .next/
+.next/cache/
 out/
 .vercel/
 next-env.d.ts
@@ -25,9 +26,14 @@ build/
 prisma/migrations/
 prisma/dev.db
 prisma/dev.db-journal
+prisma/.env
+
+# Generated (Prisma Client)
+src/generated/
 
 # Docker
 db-data/
+docker-compose.override.yml
 *.log
 
 # OS / Editor
