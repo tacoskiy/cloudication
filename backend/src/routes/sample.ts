@@ -14,7 +14,7 @@ router.get("/", async (_req, res) => {
 router.post("/", async (req, res) => {
   const { content } = req.body;
 
-  const sample = prisma.sample.create({
+  const sample = await prisma.sample.create({
     data: { content }
   });
 
