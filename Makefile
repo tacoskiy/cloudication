@@ -74,6 +74,9 @@ generate:
 prisma:
 	$(COMPOSE) exec backend npx prisma studio
 
+seed:
+	$(COMPOSE) exec backend npx prisma db seed
+
 # =========================
 # Database
 # =========================
