@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <header className="w-full h-auto p-3 bg-brand-primary flex gap-3">
       <div className="flex items-center gap-3">
-        <Icon name="cloudication" />
+        <Icon name="cloudication" size={24} className="text-text-invert"/>
         <Image className="h-3 w-auto" src="img/vector/cloudication-logotype.svg" alt="クモ二ケーション" width={1} height={1}></Image>
       </div>
     </header>
