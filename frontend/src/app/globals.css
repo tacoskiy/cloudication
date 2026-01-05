@@ -30,7 +30,7 @@
 }
 
 body {
-  background: var(--bg);
+  background: var(--brand-primary);
   color: var(--text);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
