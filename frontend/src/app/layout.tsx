@@ -4,6 +4,8 @@ import "./globals.css";
 
 import Header from "@/components/layout/Header";
 
+import { CameraProvider } from "@/hooks/camera/CameraProvider";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,9 +26,11 @@ export default function RootLayout({ children }:Readonly<{ children: React.React
     <html lang="ja">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Header/>
-        <main>
-          {children}
-        </main>
+        <CameraProvider>
+          <main>
+            {children}
+          </main>
+        </CameraProvider>
       </body>
     </html>
   );

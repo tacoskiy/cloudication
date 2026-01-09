@@ -10,7 +10,7 @@ interface ButtonProps {
 
 const Button = ({ icon, label, className, onClick }:ButtonProps) => {
   return (
-    <button onClick={onClick} className={`${className} cursor-pointer bg-accent-success text-text-invert rounded-full flex gap-3 active:brightness-125 ${label ? "px-4 py-3" : "p-3"}`}>
+    <button onClick={onClick} className={`${className} select-none cursor-pointer bg-accent-success text-text-invert rounded-full flex gap-3 justify-center items-center active:brightness-98 active:scale-95 transition-transform duration-200 ${label ? "px-4 py-3" : "p-3"}`}>
       {icon && <Icon name={icon!} size={24}/>}
       {label && <p>{label}</p>}
     </button>
