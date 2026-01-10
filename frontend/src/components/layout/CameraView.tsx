@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 import Button from "../common/Button";
 
-import { useCameraContext } from "@/hooks/camera/useCameraContext";
+import { useCameraContext } from "@/contexts/useCameraContext";
 
 const CameraView = () => {
   const videoRef = useRef<HTMLVideoElement>(null);

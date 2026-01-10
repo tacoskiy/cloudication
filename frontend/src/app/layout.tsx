@@ -4,7 +4,8 @@ import "./globals.css";
 
 import Header from "@/components/layout/Header";
 
-import { CameraProvider } from "@/hooks/camera/CameraProvider";
+import AppProviders from "@/providers/AppProviders";
+import ModalOverlay from "@/components/common/ModalOverlay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,14 +25,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }:Readonly<{ children: React.ReactNode; }>){
   return (
     <html lang="ja">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Header/>
-        <CameraProvider>
+      <AppProviders>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <Header/>
+          <ModalOverlay/>
           <main>
             {children}
           </main>
-        </CameraProvider>
-      </body>
+        </body>
+      </AppProviders>
     </html>
   );
 }

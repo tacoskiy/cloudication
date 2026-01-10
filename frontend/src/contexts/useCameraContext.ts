@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { CameraContext } from "./CameraProvider";
+import { CameraContext } from "../providers/CameraProvider";
 
 export const useCameraContext = () => {
   const ctx = useContext(CameraContext);
