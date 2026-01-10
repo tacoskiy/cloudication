@@ -37,6 +37,7 @@ const useCamera = () => {
   };
 
   const detachCamera = async (videoRef: React.RefObject<HTMLVideoElement | null>) => {
+    if (!isCameraAttached) return;
     const video = videoRef.current;
     if (!video || !video.srcObject) return;
 
