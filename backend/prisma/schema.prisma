@@ -13,31 +13,28 @@ model Sample {
   createdAt DateTime @default(now())
 }
 
-// example -------------------------------------------------------------------------
-//
-// prismaでのモデルの書き方
-//
-// model User {
-//   id        String   @id @default(cuid())
-//   email     String   @unique
-//   name      String?
-//   posts     Post[]
+model CloudPost {
+  id        String        @id @default(uuid())
+  image_url String
+  created_at DateTime     @default(now())
+  content   String
+  location  CloudLocation?
+  likes     CloudLike[]
+}
 
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+model CloudLocation {
+  post_id    String      @id
+  lat        Float
+  lng        Float
+  expires_at DateTime
+  post       CloudPost   @relation(fields: [post_id], references: [id])
+}
 
-// model Post {
-//   id        String   @id @default(cuid())
-//   title     String
-//   content   String?
-//   published Boolean  @default(false)
+model CloudLike {
+  post_id    String
+  client_id  String
+  liked_at   DateTime    @default(now())
+  post       CloudPost   @relation(fields: [post_id], references: [id])
 
-//   author    User     @relation(fields: [authorId], references: [id])
-//   authorId  String
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-//
-// example -------------------------------------------------------------------------
+  @@id([post_id, client_id])
+}
