@@ -5,7 +5,6 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 
 import AppProviders from "@/providers/AppProviders";
-import ModalOverlay from "@/components/common/ModalOverlay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +27,6 @@ export default function RootLayout({ children }:Readonly<{ children: React.React
       <AppProviders>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <Header/>
-          <ModalOverlay/>
           <main>
             {children}
           </main>

@@ -6,11 +6,18 @@ const useCamera = () => {
 
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
 
-  const attachCamera = async (videoRef: React.RefObject<HTMLVideoElement | null>) => {
+  const attachCamera = async (
+    videoRef: React.RefObject<HTMLVideoElement | null>,
+  ) => {
     if (isCameraAttached) return;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
+        video: {
+          facingMode: { ideal: "environment" }, // 背面カメラ
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          frameRate: { ideal: 30 },
+        },
         audio: false,
       });
 
@@ -36,7 +43,9 @@ const useCamera = () => {
     }
   };
 
-  const detachCamera = async (videoRef: React.RefObject<HTMLVideoElement | null>) => {
+  const detachCamera = async (
+    videoRef: React.RefObject<HTMLVideoElement | null>,
+  ) => {
     if (!isCameraAttached) return;
     const video = videoRef.current;
     if (!video || !video.srcObject) return;
@@ -67,6 +76,7 @@ const useCamera = () => {
     isCameraAttached,
     error,
     capturedImage,
+    setCapturedImage,
     attachCamera,
     detachCamera,
     capture,
