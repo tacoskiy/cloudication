@@ -1,7 +1,9 @@
-import { useContext } from "react";
-import { CameraContext } from "../providers/CameraProvider";
+import { createContext, useContext } from "react";
+import type { UseCameraReturn } from "@/hooks/useCamera";
 
-export const useCameraContext = () => {
+export const CameraContext = createContext<UseCameraReturn | null>(null);
+
+export const useCameraContext = (): UseCameraReturn => {
   const ctx = useContext(CameraContext);
   if (!ctx) {
     throw new Error("useCameraContext must be used within CameraProvider");

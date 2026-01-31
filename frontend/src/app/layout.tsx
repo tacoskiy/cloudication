@@ -24,14 +24,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }:Readonly<{ children: React.ReactNode; }>){
   return (
     <html lang="ja">
-      <AppProviders>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <Header/>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Header/>
+        <AppProviders>
           <main>
             {children}
           </main>
-        </body>
-      </AppProviders>
+        </AppProviders>
+      </body>
     </html>
   );
 }

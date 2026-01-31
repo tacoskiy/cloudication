@@ -1,10 +1,7 @@
 "use client";
 
-import { createContext } from "react";
-import useCamera from "../hooks/useCamera";
-
-export const CameraContext =
-  createContext<ReturnType<typeof useCamera> | null>(null);
+import useCamera from "@/hooks/useCamera";
+import { CameraContext } from "@/contexts/useCameraContext";
 
 export const CameraProvider = ({
   children,

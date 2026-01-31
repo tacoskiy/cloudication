@@ -84,3 +84,4 @@ const useCamera = () => {
 };
 
 export default useCamera;
+export type UseCameraReturn = ReturnType<typeof useCamera>;
