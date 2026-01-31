@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 
 import sampleRouter from "./routes/sample";
+import cloudPostsRouter from "./routes/cloudPosts";
 
 dotenv.config();
 
@@ -24,3 +25,4 @@ app.get("/api/hello", (_req, res) => {
 });
 
 app.use("/samples", sampleRouter);
+app.use("/api/cloud-posts", cloudPostsRouter);
