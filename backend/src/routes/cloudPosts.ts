@@ -62,7 +62,7 @@ router.post("/", async (req: Request, res: Response) => {
         }
 
         // image_tokenをimage_urlに変換
-        const image_url = `https://pub.example.com/uploads/${image_token}`;
+        const image_url = `uploads/${image_token}`;
 
         // expires_at: 現在時刻 + 24時間
         const expires_at = new Date();
