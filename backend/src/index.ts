@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import imagesRouter from "./routes/images";
 import sampleRouter from "./routes/sample";
 import cloudPostsRouter from "./routes/cloudPosts";
 
@@ -26,3 +27,4 @@ app.get("/api/hello", (_req, res) => {
 
 app.use("/samples", sampleRouter);
 app.use("/api/cloud-posts", cloudPostsRouter);
+app.use("/images", imagesRouter);
