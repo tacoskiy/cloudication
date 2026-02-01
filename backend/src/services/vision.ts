@@ -13,7 +13,7 @@ export async function analyzeWithAzureVision(buffer: Buffer) {
       "Content-Type": "application/octet-stream",
       "Ocp-Apim-Subscription-Key": key,
     },
-    body: buffer,
+    body: new Uint8Array(buffer),
   });
 
   const data = await res.json();
@@ -24,10 +24,14 @@ export async function analyzeWithAzureVision(buffer: Buffer) {
   }
 
   const cloudTag = (data.tags || []).find((t: any) => t.name === "cloud");
+  const faces = data.faces || [];
+  const tags = data.tags || [];
 
   return {
-    adult: data.adult?.isAdultContent ?? false,
-    faceDetected: (data.faces || []).length > 0,
+    adult: data.adult ?? {},
+    faceDetected: faces.length > 0,
     cloudRatio: cloudTag ? cloudTag.confidence : 0,
+    tags,
+    faces,
   };
 }
