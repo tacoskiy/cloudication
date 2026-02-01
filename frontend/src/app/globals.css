@@ -1,28 +1,13 @@
 @import "tailwindcss";
 
-:root {
-  --bg-surface: #FDFFFC;
-  --bg-invert: #011502;
-
-  --text-primary: #011502;
-  --text-invert: #FDFFFC;
-
-  --brand-primary: #17BEBB;
-  --brand-secondary: #0E7C7B;
-
-  --accent-success: #91CB3E;
-}
-
 @theme {
-  --color-bg-surface: var(--bg-surface);
-  --color-bg-invert: var(--bg-invert);
-
-  --color-text-primary: var(--text-primary);
-  --color-text-invert: var(--text-invert);
-
-  --color-brand-primary: var(--brand-primary);
-  --color-brand-secondary: var(--brand-secondary);
-  --color-accent-success: var(--accent-success);
+  /* colors */
+  --color-surface: #FDFFFC;
+  --color-invert: #011502;
+  --color-brand: #17BEBB;
+  --color-brand-muted: #0E7C7B;
+  --color-brand-accent: #91CB3E;
+  --color-alert: #E5363A;
 }
 
 @theme inline {
@@ -31,11 +16,9 @@
 }
 
 body {
-  background: var(--brand-primary);
-  color: var(--text-primary);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  @apply bg-brand text-invert font-sans antialiased;
 }
 
-.button-white-overlay{
-    @apply text-text-invert bg-bg-surface/24 backdrop-blur-md;
-  }
+.button-white-overlay {
+  @apply text-surface bg-surface/24 backdrop-blur-md;
+}

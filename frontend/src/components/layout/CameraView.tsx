@@ -36,7 +36,7 @@ const CameraView = () => {
   };
 
   return (
-    <div className="w-full h-[80vh] p-3 bg-bg-surface/24 rounded-[48px] overflow-clip relative flex flex-col justify-end gap-3">
+    <div className="w-full h-[80vh] p-3 bg-surface/24 rounded-[48px] overflow-clip relative flex flex-col justify-end gap-3">
       <div
         ref={shutterRef}
         className="pointer-events-none absolute inset-0 bg-black z-10 opacity-0"
@@ -50,7 +50,7 @@ const CameraView = () => {
       ></video>
 
       {camera.error && (
-        <p className="text-red-600 text-sm text-center bg-bg-surface w-fit px-4 py-3 rounded-full -translate-1/2 absolute top-24 left-1/2">
+        <p className="text-red-600 text-sm text-center bg-surface w-fit px-4 py-3 rounded-full -translate-1/2 absolute top-24 left-1/2">
           {camera.error}
         </p>
       )}
