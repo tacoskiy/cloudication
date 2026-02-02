@@ -39,6 +39,9 @@ help:
 up:
 	$(COMPOSE) up -d
 
+exp:
+	ngrok http 3000
+
 down:
 	$(COMPOSE) down
 

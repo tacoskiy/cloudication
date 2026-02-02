@@ -2,6 +2,12 @@
 
 import { useRef } from "react";
 
+/**
+ * NOTE:
+ * 画像アップロードによる解析検証用ページ
+ * CameraView は一瞬で再実装可能なため、こちらを正として採用
+ */
+
 export default function CameraPage() {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,9 +32,8 @@ export default function CameraPage() {
   };
 
   return (
-    <div style={{ padding: 24 }}>
-      <h1>画像アップロード（仮）</h1>
-
+    <div className="p-6">
+      <h1 className="text-lg font-bold mb-4">画像アップロード（検証用）</h1>
       <input
         ref={inputRef}
         type="file"
