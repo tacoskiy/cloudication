@@ -13,16 +13,22 @@ const CameraView = () => {
   const camera = useCameraContext();
 
   useEffect(() => {
-    if (!videoRef.current) return;
+    if (videoRef.current) {
+      camera.attachCamera(videoRef);
+    }
 
-    camera.attachCamera(videoRef);
-  }, [camera]);
+    return () => {
+      camera.detachCamera(videoRef);
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const capture = () => {
     if (!videoRef.current) return;
     camera.capture(videoRef);
     playShutter();
-  };
+  }; 
 
   const playShutter = () => {
     const el = shutterRef.current;
@@ -57,7 +63,9 @@ const CameraView = () => {
 
       <div className="w-full flex gap-3 relative z-2">
         <Button
-          onClick={() => {camera.setCapturedImage(null)}}
+          onClick={() => {
+            camera.setCapturedImage(null);
+          }}
           icon="x"
           className="button-white-overlay w-auto h-20 aspect-square"
         />

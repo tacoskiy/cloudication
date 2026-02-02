@@ -6,8 +6,8 @@ services:
     volumes:
       - ./frontend:/ctr-frontend
       - /ctr-frontend/node_modules
-    environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    env_file:
+      - .env
     depends_on:
       - backend
 
