@@ -1,11 +1,24 @@
 FROM node:20-alpine
 
-WORKDIR /ctr-backend
+WORKDIR /app
 
-COPY package.json package-lock.json ./
+# Copy root workspace config
+COPY package.json ./
+
+# Copy shared packages
+COPY packages ./packages
+
+# Copy backend package config
+COPY backend/package.json ./backend/
+COPY frontend/package.json ./frontend/
+
+# Install dependencies from root
 RUN npm install
 
-COPY . .
+# Copy backend source
+COPY backend ./backend
+
+WORKDIR /app/backend
 
 RUN npx prisma generate
 

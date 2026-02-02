@@ -1,23 +1,29 @@
 services:
   frontend:
-    build: ./frontend
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
     ports:
       - "${FRONTEND_PORT}:3000"
     volumes:
-      - ./frontend:/ctr-frontend
-      - /ctr-frontend/node_modules
+      - ./frontend:/app/frontend
+      - /app/node_modules
+      - /app/frontend/node_modules
     env_file:
       - .env
     depends_on:
       - backend
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
     ports:
       - "${BACKEND_PORT}:8000"
     volumes:
-      - ./backend:/ctr-backend
-      - /ctr-backend/node_modules
+      - ./backend:/app/backend
+      - /app/node_modules
+      - /app/backend/node_modules
     environment:
       DATABASE_URL: ${DATABASE_URL}
     depends_on:

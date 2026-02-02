@@ -1,11 +1,24 @@
 FROM node:20-alpine
 
-WORKDIR /ctr-frontend
+WORKDIR /app
 
-COPY package.json package-lock.json ./
+# Copy root workspace config
+COPY package.json ./
+
+# Copy shared packages
+COPY packages ./packages
+
+# Copy frontend package config
+COPY frontend/package.json ./frontend/
+COPY backend/package.json ./backend/
+
+# Install dependencies from root
 RUN npm install
 
-COPY . .
+# Copy frontend source
+COPY frontend ./frontend
+
+WORKDIR /app/frontend
 
 EXPOSE 3000
 

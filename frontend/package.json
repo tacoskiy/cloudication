@@ -15,7 +15,8 @@
     "next": "16.1.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-map-gl": "^8.1.0"
+    "react-map-gl": "^8.1.0",
+    "@cloudication/shared-types": "*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
