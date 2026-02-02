@@ -24,8 +24,8 @@ services:
       - ./backend:/app/backend
       - /app/node_modules
       - /app/backend/node_modules
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
+    env_file:
+    - .env
     depends_on:
       - db
 
