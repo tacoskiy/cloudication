@@ -46,3 +46,5 @@ Thumbs.db
 
 # Tests / Coverage
 coverage/
+docs/ERROR_POINTS.md
+docs/PROJECT_OVERVIEW.md
