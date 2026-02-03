@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import crypto from "crypto";
 import { analyzeWithAzureVision } from "../services/vision";
+import { uploadToR2 } from "../services/r2";
 
 const router = Router();
 
@@ -107,12 +108,35 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
       reasons.length > 0 ? "accepted_with_warning" : "accepted";
 
     /* =========================
-       ❼ 画像トークン生成
+       ❼ R2 へアップロード（accepted の場合のみ）
     ========================= */
-    const imageToken = `temp/${new Date()
-      .toISOString()
-      .slice(0, 10)
-      .replace(/-/g, "")}/${crypto.randomUUID()}.jpg`;
+    let imageUrl: string | null = null;
+    let imageToken: string | null = null;
+
+    if (status === "accepted" || status === "accepted_with_warning") {
+      try {
+        // ファイルパスを生成（例: images/2026/02/03/uuid.jpg）
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const filename = `${crypto.randomUUID()}.jpg`;
+        const key = `images/${year}/${month}/${day}/${filename}`;
+
+        // R2 にアップロード
+        imageUrl = await uploadToR2(req.file.buffer, key, req.file.mimetype);
+        imageToken = key;
+      } catch (uploadError) {
+        console.error("R2 upload failed:", uploadError);
+        // アップロード失敗時はエラーを返す
+        return res.status(500).json({
+          status: "rejected",
+          reason_code: "UPLOAD_FAILED",
+          message: "画像のアップロードに失敗しました。",
+          suggestions: ["時間をおいて再度お試しください"],
+        });
+      }
+    }
 
     /* =========================
        ❽ レスポンス
@@ -126,7 +150,7 @@ router.post("/analyze", upload.single("image"), async (req, res) => {
       reasons,
       suggestions,
       image_token: imageToken,
-      preview_url: `https://r2.example.com/${imageToken}`,
+      preview_url: imageUrl,
       analysis: {
         cloud_ratio: cloudRatio,
       },

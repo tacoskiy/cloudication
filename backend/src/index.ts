@@ -27,4 +27,4 @@ app.get("/api/hello", (_req, res) => {
 
 app.use("/samples", sampleRouter);
 app.use("/api/cloud-posts", cloudPostsRouter);
-app.use("/images", imagesRouter);
+app.use("/api/images", imagesRouter);
