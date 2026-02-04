@@ -1,39 +1,46 @@
 services:
-  frontend:
+  web:
     build:
       context: .
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: docker/Dockerfile.dev
+    working_dir: /app
+    command: npm run dev:web
     ports:
-      - "${FRONTEND_PORT}:3000"
+      - "3000:3000"
     volumes:
-      - ./frontend:/app/frontend
+      - .:/app
       - /app/node_modules
-      - /app/frontend/node_modules
     env_file:
       - .env
     depends_on:
-      - backend
+      - api
 
-  backend:
+  api:
     build:
       context: .
-      dockerfile: ./backend/Dockerfile
+      dockerfile: docker/Dockerfile.dev
+    working_dir: /app
+    command: npm run dev:api
     ports:
-      - "${BACKEND_PORT}:8000"
+      - "8000:8000"
     volumes:
-      - ./backend:/app/backend
+      - .:/app
       - /app/node_modules
-      - /app/backend/node_modules
     env_file:
-    - .env
+      - .env
     depends_on:
       - db
 
   db:
     image: postgres:16
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - ./db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

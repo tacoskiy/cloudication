@@ -10,7 +10,7 @@ const TestAPI = () => {
   useEffect(() => {(
     async () => {
       try {
-        const res = await apiFetch("/api/hello");
+        const res = await apiFetch("/api/hello") as { message: string };
         setMessage(res.message);
       } finally {
         setLoading(false);
