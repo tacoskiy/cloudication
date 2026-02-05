@@ -58,6 +58,7 @@ export default function MapView() {
         mapStyle="mapbox://styles/tacoskiy/cml3kbgaa000o01sx18mgawxv"
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         reuseMaps
+        attributionControl={false}
         maxZoom={20}
         minZoom={10}
       >

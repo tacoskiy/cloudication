@@ -1,6 +1,6 @@
 "use client";
 
-import useCamera from "@/hooks/useCamera";
+import { useCamera } from "@/features/camera";
 import { CameraContext } from "@/contexts/useCameraContext";
 
 export const CameraProvider = ({

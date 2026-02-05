@@ -3,6 +3,28 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./image-moderate": {
+      "types": "./dist/image-moderate.d.ts",
+      "import": "./dist/image-moderate.js",
+      "require": "./dist/image-moderate.js"
+    },
+    "./cloud-post": {
+      "types": "./dist/cloud-post.d.ts",
+      "import": "./dist/cloud-post.js",
+      "require": "./dist/cloud-post.js"
+    },
+    "./likes": {
+      "types": "./dist/likes.d.ts",
+      "import": "./dist/likes.js",
+      "require": "./dist/likes.js"
+    }
+  },
   "scripts": {
     "build": "tsc"
   },

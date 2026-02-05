@@ -9,7 +9,7 @@ const r2Client = new S3Client({
   },
 });
 
-export async function uploadToR2(
+export async function r2TempUpload(
   buffer: Buffer,
   key: string,
   contentType: string = "image/jpeg"

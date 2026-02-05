@@ -9,6 +9,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "@cloudication/shared-types/*": [
+        "../../packages/shared-types/src/*"
       ]
     },
     "outDir": "dist",

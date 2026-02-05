@@ -3,11 +3,13 @@
 @theme {
   /* colors */
   --color-surface: #FDFFFC;
+  --color-surface-muted: #F5F5F5;
   --color-invert: #011502;
   --color-brand: #17BEBB;
   --color-brand-muted: #0E7C7B;
   --color-brand-accent: #91CB3E;
   --color-alert: #E5363A;
+  --color-warning: #EB8E0C;
 }
 
 @theme inline {

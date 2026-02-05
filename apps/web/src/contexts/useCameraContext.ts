@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { UseCameraReturn } from "@/hooks/useCamera";
+import type { UseCameraReturn } from "@/features/camera";
 
 export const CameraContext = createContext<UseCameraReturn | null>(null);
 

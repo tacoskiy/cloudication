@@ -2,9 +2,10 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import imagesRouter from "./routes/images";
+import imageModerateRouter from "./features/image-moderate/image-moderate.route";
 import sampleRouter from "./routes/sample";
-import cloudPostsRouter from "./routes/cloudPosts";
+import cloudPostRouter from "./features/cloud-post/cloud-post.route";
+import likesRouter from "./features/cloud-post/likes.route";
 
 dotenv.config();
 
@@ -26,5 +27,6 @@ app.get("/api/hello", (_req, res) => {
 });
 
 app.use("/samples", sampleRouter);
-app.use("/api/cloud-posts", cloudPostsRouter);
-app.use("/api/images", imagesRouter);
+app.use("/api/cloud-posts", cloudPostRouter);
+app.use("/api/likes", likesRouter);
+app.use("/api/image-moderate", imageModerateRouter);
