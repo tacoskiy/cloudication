@@ -2,17 +2,18 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# package 定義だけ先にコピー（キャッシュ最適化）
+# 依存定義だけ先コピー
 COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/
 COPY apps/web/package.json ./apps/web/
 COPY packages/shared-types/package.json ./packages/shared-types/
 
-# ★ ここが重要
 RUN npm install --workspaces --include-workspace-root
 
 # ソース全体
 COPY . .
 
-# bin を確実に通す
+# ★ Prisma generate を api に責務分離
+RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
+
 ENV PATH=/app/node_modules/.bin:$PATH

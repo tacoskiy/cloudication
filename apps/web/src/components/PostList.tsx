@@ -49,7 +49,7 @@ export default function PostList() {
                 <p className="font-semibold">{post.content}</p>
                 <div className="text-xs text-gray-500 flex gap-4 mt-1">
                   <span>Likes: {post.likes_count}</span>
-                  <span>
+                  <span className="text-wrap">
                     Location: {post.lat?.toFixed(4)}, {post.lng?.toFixed(4)}
                   </span>
                   <span>Expires: {post.expires_at ? new Date(post.expires_at).toLocaleString() : 'N/A'}</span>

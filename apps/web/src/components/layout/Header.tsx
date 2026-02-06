@@ -10,9 +10,12 @@ const Header = () => {
         <Icon name="cloudication" size={36} className="text-surface"/>
         <Image className="h-4 w-auto" src="img/vector/cloudication-logotype.svg" alt="クモ二ケーション" width={1} height={1} priority/>
       </Link>
-      <nav className="flex gap-3">
-        <Button icon="help" className="button-white-overlay"/>
-        <Button icon="setting" className="button-white-overlay"/>
+      <nav className="flex gap-2">
+        <Link href="/posts">
+          <Button icon="post" className="button-white-overlay h-10 w-10 p-0" />
+        </Link>
+        <Button icon="help" className="button-white-overlay h-10 w-10 p-0" />
+        <Button icon="setting" className="button-white-overlay h-10 w-10 p-0" />
       </nav>
     </header>
   );

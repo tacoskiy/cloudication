@@ -29,7 +29,7 @@ export const useModerateModalFlow = (isOpen: boolean) => {
   const articleAnimClass =
     articleAnim === "enter"
       ? "opacity-100 translate-y-0 scale-100"
-      : "opacity-0 translate-y-6 scale-95";
+      : "opacity-0 translate-y-2 scale-[0.98]";
 
   return {
     view,

@@ -1,5 +1,6 @@
 import { CreateCloudPostRequest as CreatePostDto, CloudPost, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
 import prisma from "../../lib/prisma";
+import { r2MoveToMain } from "../../services/cloudflare-r2";
 
 
 export const cloudPostService = {
@@ -69,9 +70,18 @@ export const cloudPostService = {
     const expires_at = new Date();
     expires_at.setHours(expires_at.getHours() + 24);
 
-    // Note: In a real app, you might want to map image_token to a real URL or use it as is
-    // The previous implementation used `uploads/${image_token}`
-    const image_url = `uploads/${data.image_token}`;
+    // R2 の一時保存バケットからメインバケットへ画像を移動
+    let image_url = "";
+    try {
+      image_url = await r2MoveToMain(data.image_token);
+    } catch (error) {
+      console.error("Failed to move image to main bucket:", error);
+      // 移動に失敗した場合は一旦一時保存のパスを生成（暫定対応）
+      const TEMP_BUCKET = process.env.R2_TEMP_BUCKET_NAME || "cloudication-temp";
+      image_url = process.env.R2_TEMP_PUBLIC_URL
+        ? `${process.env.R2_TEMP_PUBLIC_URL}/${data.image_token}`
+        : `https://${TEMP_BUCKET}.r2.dev/${data.image_token}`;
+    }
 
     const post = await prisma.cloudPost.create({
       data: {
