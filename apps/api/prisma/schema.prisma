@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Sample {
+  id        Int      @id @default(autoincrement())
+  content   String?
+  createdAt DateTime @default(now())
+}
+
+model CloudPost {
+  id        String        @id @default(uuid())
+  image_url String
+  created_at DateTime     @default(now())
+  content   String
+  location  CloudLocation?
+  likes     CloudLike[]
+}
+
+model CloudLocation {
+  post_id    String      @id
+  lat        Float
+  lng        Float
+  expires_at DateTime
+  post       CloudPost   @relation(fields: [post_id], references: [id])
+}
+
+model CloudLike {
+  post_id    String
+  client_id  String
+  liked_at   DateTime    @default(now())
+  post       CloudPost   @relation(fields: [post_id], references: [id])
+
+  @@id([post_id, client_id])
+}

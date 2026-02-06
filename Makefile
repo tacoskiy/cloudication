@@ -2,8 +2,8 @@
 # Global
 # =========================
 COMPOSE = docker compose
-BACKEND = backend
-FRONTEND = frontend
+API = api
+WEB = web
 
 .DEFAULT_GOAL := help
 
@@ -22,8 +22,9 @@ help:
 	@echo "  make dev           Build & start (dev)"
 	@echo "  make rebuild       Rebuild all images"
 	@echo ""
-	@echo "Backend:"
-	@echo "  make be            Exec backend shell"
+	@echo "Services:"
+	@echo "  make api-sh        Exec api shell"
+	@echo "  make web-sh        Exec web shell"
 	@echo "  make prisma        Run prisma studio"
 	@echo "  make migrate       Prisma migrate dev"
 	@echo "  make generate      Prisma generate"
@@ -38,6 +39,9 @@ help:
 # =========================
 up:
 	$(COMPOSE) up -d
+
+exp:
+	ngrok http 3000
 
 down:
 	$(COMPOSE) down
@@ -56,26 +60,29 @@ rebuild:
 	$(COMPOSE) build --no-cache
 
 # =========================
-# Backend
+# Shell Access
 # =========================
-be:
-	$(COMPOSE) exec backend sh
+api-sh:
+	$(COMPOSE) exec $(API) sh
+
+web-sh:
+	$(COMPOSE) exec $(WEB) sh
 
 # =========================
 # Prisma
 # =========================
 migrate:
-	$(COMPOSE) exec backend npx prisma migrate dev
-	$(COMPOSE) exec backend npx prisma generate
+	$(COMPOSE) exec $(API) npx prisma migrate dev
+	$(COMPOSE) exec $(API) npx prisma generate
 
 generate:
-	$(COMPOSE) exec backend npx prisma generate
+	$(COMPOSE) exec $(API) npx prisma generate
 
 prisma:
-	$(COMPOSE) exec backend npx prisma studio
+	$(COMPOSE) exec $(API) npx prisma studio
 
 seed:
-	$(COMPOSE) exec backend npx prisma db seed
+	$(COMPOSE) exec $(API) npx prisma db seed
 
 # =========================
 # Database

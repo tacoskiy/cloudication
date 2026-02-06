@@ -1,0 +1,39 @@
+# Build Stage
+FROM node:20-slim AS builder
+WORKDIR /app
+
+# Install dependencies
+COPY package.json package-lock.json ./
+COPY apps/web/package.json ./apps/web/
+COPY apps/api/package.json ./apps/api/
+COPY packages/shared-types/package.json ./packages/shared-types/
+RUN npm ci
+
+# Copy source files
+COPY . .
+
+# Build shared types
+RUN npm run build:shared
+
+# Build api app
+RUN npm run build:api
+
+# Production Stage
+FROM node:20-slim AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+# Copy node_modules from builder (or reinstall if you want to be extra clean)
+COPY --from=builder /app/package.json /app/package-lock.json ./
+COPY --from=builder /app/apps/api/package.json ./apps/api/
+COPY --from=builder /app/packages/shared-types ./packages/shared-types
+
+# Re-install production only dependencies for monorepo is tricky, 
+# so we copy the built result and workspace node_modules
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
+
+EXPOSE 8000
+
+CMD ["node", "apps/api/dist/index.js"]

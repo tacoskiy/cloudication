@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@cloudication/shared-types/*": [
+        "../../packages/shared-types/src/*"
+      ]
+    },
+    "outDir": "dist",
+    "noEmit": false
+  },
+  "include": [
+    "src"
+  ]
+}
