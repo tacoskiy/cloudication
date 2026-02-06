@@ -10,6 +10,7 @@ export const MOCK_POSTS: CloudPost[] = [
     lng: 138.7274,
     expires_at: null,
     likes_count: 452,
+    is_liked: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -20,6 +21,7 @@ export const MOCK_POSTS: CloudPost[] = [
     lng: 142.4566,
     expires_at: null,
     likes_count: 231,
+    is_liked: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -30,6 +32,7 @@ export const MOCK_POSTS: CloudPost[] = [
     lng: 125.2762,
     expires_at: null,
     likes_count: 312,
+    is_liked: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -40,6 +43,7 @@ export const MOCK_POSTS: CloudPost[] = [
     lng: 130.5126,
     expires_at: null,
     likes_count: 156,
+    is_liked: false,
     created_at: new Date().toISOString(),
   },
 
@@ -52,6 +56,7 @@ export const MOCK_POSTS: CloudPost[] = [
     lng: 139.7005,
     expires_at: null,
     likes_count: 89,
+    is_liked: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -62,6 +67,7 @@ export const MOCK_POSTS: CloudPost[] = [
     lng: 139.7015,
     expires_at: null,
     likes_count: 45,
+    is_liked: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -72,6 +78,7 @@ export const MOCK_POSTS: CloudPost[] = [
     lng: 139.7000,
     expires_at: null,
     likes_count: 23,
+    is_liked: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -82,6 +89,7 @@ export const MOCK_POSTS: CloudPost[] = [
     lng: 139.6990,
     expires_at: null,
     likes_count: 67,
+    is_liked: false,
     created_at: new Date().toISOString(),
   },
   {
@@ -92,6 +100,7 @@ export const MOCK_POSTS: CloudPost[] = [
     lng: 139.6921,
     expires_at: null,
     likes_count: 198,
+    is_liked: false,
     created_at: new Date().toISOString(),
   }
 ];

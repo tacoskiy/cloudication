@@ -4,7 +4,7 @@ import { r2MoveToMain } from "../../services/cloudflare-r2";
 
 
 export const cloudPostService = {
-  async getRecentPosts(hours: number = 24): Promise<CloudPost[]> {
+  async getRecentPosts(hours: number = 24, clientId?: string): Promise<CloudPost[]> {
     const threshold = new Date();
     threshold.setHours(threshold.getHours() - hours);
 
@@ -16,6 +16,11 @@ export const cloudPostService = {
       },
       include: {
         location: true,
+        likes: clientId ? {
+          where: {
+            client_id: clientId,
+          },
+        } : false,
         _count: {
           select: {
             likes: true,
@@ -35,15 +40,21 @@ export const cloudPostService = {
       lng: post.location?.lng || null,
       expires_at: post.location?.expires_at ? post.location.expires_at.toISOString() : null,
       likes_count: post._count.likes,
+      is_liked: post.likes ? post.likes.length > 0 : false,
       created_at: post.created_at.toISOString(),
     }));
   },
 
-  async getPostById(id: string): Promise<CloudPost | null> {
+  async getPostById(id: string, clientId?: string): Promise<CloudPost | null> {
     const post = await prisma.cloudPost.findUnique({
       where: { id },
       include: {
         location: true,
+        likes: clientId ? {
+          where: {
+            client_id: clientId,
+          },
+        } : false,
         _count: {
           select: {
             likes: true,
@@ -62,6 +73,7 @@ export const cloudPostService = {
       lng: post.location?.lng || null,
       expires_at: post.location?.expires_at ? post.location.expires_at.toISOString() : null,
       likes_count: post._count.likes,
+      is_liked: post.likes ? post.likes.length > 0 : false,
       created_at: post.created_at.toISOString(),
     };
   },

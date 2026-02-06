@@ -20,6 +20,7 @@ interface PostDetailModalProps {
 const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
   const [post, setPost] = useState<CloudPost | null>(null);
   const [isLiking, setIsLiking] = useState(false);
+  const [hasLiked, setHasLiked] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
       return;
     }
 
+    setHasLiked(false);
 
     const fetchPost = async () => {
       if (postId.startsWith("mock-")) {
@@ -38,8 +40,10 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
       }
 
       try {
-        const data = await apiFetch<CloudPost>(`/api/cloud-posts/${postId}`);
+        const clientId = getOrCreateClientId();
+        const data = await apiFetch<CloudPost>(`/api/cloud-posts/${postId}?client_id=${clientId}`);
         setPost(data);
+        setHasLiked(!!data.is_liked);
       } catch (err) {
         console.error("Failed to fetch post detail:", err);
         setError("投稿の読み込みに失敗しました");
@@ -62,6 +66,7 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
       setPost((prev) =>
         prev ? { ...prev, likes_count: result.likes_count } : null
       );
+      setHasLiked(result.liked);
     } catch (err) {
       console.error("Failed to toggle like:", err);
     } finally {
@@ -72,7 +77,6 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
   return (
     <Sheet isOpen={!!postId} onClose={onClose}>
       {error || (!post && postId) ? (
-
         <div className="p-12 flex flex-col items-center gap-6">
           <p className="text-invert/40 font-bold">{error || "読み込み中..."}</p>
           <Button onClick={onClose} label="閉じる" className="bg-invert text-surface px-8 rounded-full" />
@@ -83,11 +87,11 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
           <img
             src={post.image_url}
             alt="Cloud"
-            className="w-full aspect-4/3 h-auto object-cover mask-cloud"
+            className="w-full aspect-4/3 h-auto object-cover mask-cloud shadow-2xl shadow-invert/10"
           />
 
           {/* Info Section */}
-          <div className="flex flex-col gap-6 overflow-y-auto">
+          <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden">
             <div className="flex flex-col gap-2">
               <p className="text-xl text-invert font-medium leading-relaxed">
                 {post.content}
@@ -108,27 +112,29 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
                 </span>
               </div>
             </div>
-
-            <div className="flex items-center justify-between pt-2">
-              <button
-                onClick={handleToggleLike}
-                disabled={isLiking}
-                className={`group flex items-center gap-3 px-6 h-14 rounded-2xl transition-all ${isLiking ? 'opacity-50' : 'hover:scale-105 active:scale-95'
-                  } bg-brand/5 border border-brand/10`}
-              >
-                <div className="text-brand">
-                  <Icon name="post" size={24} />
-                </div>
-                <span className="text-lg font-black text-brand tabular-nums">
-                  {post.likes_count}
-                </span>
-                <span className="text-xs font-bold text-brand/40 uppercase tracking-widest ml-1">Likes</span>
-              </button>
-
-              <div className="flex gap-2">
-                <Button icon="help" className="button-white-overlay w-14 h-14 p-0" />
+            <button
+              onClick={handleToggleLike}
+              disabled={isLiking}
+              className={`group flex justify-center items-center gap-3 w-full py-6 rounded-[24px] transition-all duration-300 ${isLiking ? 'opacity-50' : 'hover:scale-105 active:scale-95'
+                } ${hasLiked
+                  ? 'bg-pink text-surface shadow-lg shadow-pink/20 border-pink'
+                  : 'bg-pink/5 border border-pink/10 text-pink hover:bg-pink/10'
+                }`}
+            >
+              <div className={`transition-transform duration-500 ${hasLiked ? 'scale-110' : 'group-hover:scale-110'}`}>
+                <Icon name="heart" size={28} />
               </div>
-            </div>
+              <div className="flex flex-col items-start leading-none">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xl font-black tabular-nums">
+                    {post.likes_count}
+                  </span>
+                  <span className="text-[11px] font-bold">
+                    いいね！
+                  </span>
+                </div>
+              </div>
+            </button>
           </div>
         </article>
       ) : null}

@@ -8,7 +8,8 @@ const router = Router();
 // 24時間以内のCloudPostを取得
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const posts = await cloudPostService.getRecentPosts();
+    const clientId = req.query.client_id as string;
+    const posts = await cloudPostService.getRecentPosts(24, clientId);
     res.json(posts);
   } catch (error) {
     console.error("Error fetching cloud posts:", error);
@@ -19,7 +20,8 @@ router.get("/", async (req: Request, res: Response) => {
 // 特定のCloudPostを取得
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const post = await cloudPostService.getPostById(req.params.id as string);
+    const clientId = req.query.client_id as string;
+    const post = await cloudPostService.getPostById(req.params.id as string, clientId);
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }

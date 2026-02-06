@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Map, { Marker, MapRef } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { apiFetch } from "@/lib/apiFetch";
+import { getOrCreateClientId } from "@/lib/cookie";
 import { CloudPost } from "@cloudication/shared-types/cloud-post";
 import PostDetailModal from "@/features/posts/components/PostDetailModal";
 import PermissionModal from "@/features/shared/components/PermissionModal";
@@ -22,6 +23,8 @@ const FALLBACK_LOCATION: Location = {
   latitude: 35.6812,
   longitude: 139.7671,
 };
+
+const OVERLAP_THRESHOLD = 48;
 
 export default function MapView() {
   const [location, setLocation] = useState<Location | null>(null);
@@ -95,7 +98,7 @@ export default function MapView() {
     }).filter((p): p is NonNullable<typeof p> => p !== null);
 
     // 距離の閾値 (ピクセル)
-    const THRESHOLD = 48;
+    const THRESHOLD = OVERLAP_THRESHOLD;
 
     for (let i = 0; i < pixelCoords.length; i++) {
       for (let j = i + 1; j < pixelCoords.length; j++) {
@@ -117,7 +120,8 @@ export default function MapView() {
     // 投稿一覧を取得
     const fetchPosts = async () => {
       try {
-        const data = await apiFetch<CloudPost[]>("/api/cloud-posts");
+        const clientId = getOrCreateClientId();
+        const data = await apiFetch<CloudPost[]>(`/api/cloud-posts?client_id=${clientId}`);
         setPosts(data);
       } catch (err) {
         console.error("Failed to fetch posts for map, using mock data:", err);
@@ -130,15 +134,41 @@ export default function MapView() {
 
   const handleMarkerClick = (post: CloudPost) => {
     if (overlappingPostIds.has(post.id)) {
-      // 重まっている場合は、その地点を中心にズームイン
+      const map = mapRef.current?.getMap();
+      if (!map) return;
+
+      const currentZoom = map.getZoom();
+      const point1 = map.project([post.lng!, post.lat!]);
+
+      let maxTargetZoom = currentZoom;
+
+      posts.forEach((p) => {
+        if (p.id === post.id || p.lat === null || p.lng === null) return;
+        const point2 = map.project([p.lng, p.lat]);
+        const dist = Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2));
+
+        if (dist < OVERLAP_THRESHOLD && dist > 0) {
+          // dist * 2^(zoom_diff) = THRESHOLD
+          // 2^(zoom_diff) = THRESHOLD / dist
+          // zoom_diff = log2(THRESHOLD / dist)
+          const requiredZoom = currentZoom + Math.log2(OVERLAP_THRESHOLD / dist);
+          if (requiredZoom > maxTargetZoom) {
+            maxTargetZoom = requiredZoom;
+          }
+        }
+      });
+
+      // 段階的（+2）ではなく、計算されたズーム + バッファ（+0.5）で一気にズーム
+      // 最大ズームを20に制限
+      const finalZoom = Math.min(Math.max(maxTargetZoom + 0.5, currentZoom + 1), 20);
+
       mapRef.current?.flyTo({
         center: [post.lng!, post.lat!],
-        zoom: Math.max((mapRef.current?.getZoom() || 0) + 2, 12),
-        duration: 1000,
+        zoom: finalZoom,
+        duration: 800,
         essential: true
       });
     } else {
-      // 重まっていない場合は詳細を開く
       setSelectedPostId(post.id);
     }
   };

@@ -6,6 +6,7 @@ export interface CloudPost {
   lng: number | null;
   expires_at: string | null;
   likes_count: number;
+  is_liked?: boolean;
   created_at: string;
 }
 
