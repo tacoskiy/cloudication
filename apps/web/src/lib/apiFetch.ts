@@ -79,7 +79,9 @@ export async function apiFetch<TResponse, TBody = unknown>(
       status: res.status,
       data,
     });
-    throw new Error(`API request failed: ${res.status}`);
+    const errorMessage =
+      (data as any)?.error || `API request failed: ${res.status}`;
+    throw new Error(errorMessage);
   }
 
   return data as TResponse;

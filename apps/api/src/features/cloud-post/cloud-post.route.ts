@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { cloudPostService } from "./cloud-post.service";
 import { CloudPost, CreateCloudPostRequest, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
+import { containsNGWord } from "../../services/text-moderate";
 
 
 const router = Router();
@@ -37,13 +38,22 @@ router.post("/", async (req: Request<{}, {}, CreateCloudPostRequest>, res: Respo
   try {
     const { image_token, content, lat, lng, client_id } = req.body;
 
-    if (!image_token || !content || lat === undefined || lng === undefined || !client_id) {
-      return res.status(400).json({ error: "Missing required fields" });
+    const trimmedContent = content?.trim() || "";
+    if (!image_token || !trimmedContent || lat === undefined || lng === undefined || !client_id) {
+      return res.status(400).json({ error: "必要な項目が不足しているか、コメントが空です" });
+    }
+
+    if (trimmedContent.length > 28) {
+      return res.status(400).json({ error: "コメントは28文字以内で入力してください" });
+    }
+
+    if (containsNGWord(trimmedContent)) {
+      return res.status(400).json({ error: "不適切な表現が含まれています" });
     }
 
     const result = await cloudPostService.createPost({
       image_token,
-      content,
+      content: trimmedContent,
       lat,
       lng,
       client_id,

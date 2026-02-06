@@ -80,7 +80,17 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
   }, []);
 
   const handleSubmit = async () => {
-    if (!content.trim() || !imageToken) return;
+    const trimmedContent = content.trim();
+    if (!trimmedContent) {
+      setError("コメントを入力してください");
+      return;
+    }
+    if (trimmedContent.length > 28) {
+      setError("コメントは28文字以内で入力してください");
+      return;
+    }
+    if (!imageToken) return;
+
     if (!coords) {
       setError("位置情報を取得中です。しばらくお待ちください。");
       return;
@@ -95,7 +105,7 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
       await apiFetch<CreateCloudPostResponse, CreateCloudPostRequest>("/api/cloud-posts", {
         method: "POST",
         body: {
-          content,
+          content: trimmedContent,
           image_token: imageToken,
           lat: coords.lat,
           lng: coords.lng,
@@ -104,11 +114,11 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
       });
 
       onSubmit();
+      router.push("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "投稿に失敗しました");
     } finally {
       setIsSubmitting(false);
-      router.push("/");
     }
   };
 
