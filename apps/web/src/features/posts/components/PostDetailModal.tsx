@@ -9,6 +9,8 @@ import Icon from "@/features/shared/components/Icon";
 import Button from "@/features/shared/components/Button";
 import Sheet from "@/features/shared/components/Sheet";
 import CaptionTag from "@/features/shared/components/CaptionTag";
+import { MOCK_POSTS } from "@/features/map/constants/mockPosts";
+
 
 interface PostDetailModalProps {
   postId: string;
@@ -22,11 +24,19 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
 
   useEffect(() => {
     if (!postId) {
-      setPost(null);
       return;
     }
 
+
     const fetchPost = async () => {
+      if (postId.startsWith("mock-")) {
+        const mockPost = MOCK_POSTS.find(p => p.id === postId);
+        if (mockPost) {
+          setPost(mockPost);
+          return;
+        }
+      }
+
       try {
         const data = await apiFetch<CloudPost>(`/api/cloud-posts/${postId}`);
         setPost(data);
@@ -62,26 +72,22 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
   return (
     <Sheet isOpen={!!postId} onClose={onClose}>
       {error || (!post && postId) ? (
+
         <div className="p-12 flex flex-col items-center gap-6">
           <p className="text-invert/40 font-bold">{error || "読み込み中..."}</p>
           <Button onClick={onClose} label="閉じる" className="bg-invert text-surface px-8 rounded-full" />
         </div>
       ) : post ? (
-        <>
+        <article className="p-6 flex flex-col gap-6">
           {/* Image Section */}
-          <div className="aspect-4/3 relative bg-invert/5 p-4">
-            <img
-              src={post.image_url}
-              alt="Cloud"
-              className="w-full h-full object-cover mask-cloud shadow-inner rounded-3xl"
-            />
-            <div className="absolute top-8 left-8">
-              <CaptionTag label="Captured" icon="camera" />
-            </div>
-          </div>
+          <img
+            src={post.image_url}
+            alt="Cloud"
+            className="w-full aspect-4/3 h-auto object-cover mask-cloud"
+          />
 
           {/* Info Section */}
-          <div className="p-8 flex flex-col gap-6 overflow-y-auto">
+          <div className="flex flex-col gap-6 overflow-y-auto">
             <div className="flex flex-col gap-2">
               <p className="text-xl text-invert font-medium leading-relaxed">
                 {post.content}
@@ -124,7 +130,7 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
               </div>
             </div>
           </div>
-        </>
+        </article>
       ) : null}
     </Sheet>
   );

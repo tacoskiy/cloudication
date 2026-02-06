@@ -2,6 +2,7 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import Icon from "./Icon";
+import Button from "./Button";
 
 interface SheetProps {
   isOpen: boolean;
@@ -11,12 +12,12 @@ interface SheetProps {
   className?: string;
 }
 
-const Sheet = ({ 
-  isOpen, 
-  onClose, 
-  children, 
+const Sheet = ({
+  isOpen,
+  onClose,
+  children,
   maxWidth = "max-w-xl",
-  className = "" 
+  className = ""
 }: SheetProps) => {
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isExiting, setIsExiting] = useState(false);
@@ -42,13 +43,13 @@ const Sheet = ({
   return (
     <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6 overflow-hidden">
       {/* Backdrop */}
-      <div 
-        className={`absolute inset-0 bg-invert/40 backdrop-blur-xl ${isExiting ? "animate-backdrop-exit" : "animate-backdrop"}`}
+      <div
+        className={`absolute inset-0 bg-invert/64 backdrop-blur-lg ${isExiting ? "animate-backdrop-exit" : "animate-backdrop"}`}
         onClick={onClose}
       />
 
       {/* Content Sheet */}
-      <div 
+      <div
         onAnimationEnd={handleAnimationEnd}
         className={`
           relative w-full ${maxWidth} bg-surface rounded-[42px] shadow-2xl overflow-hidden
@@ -58,13 +59,7 @@ const Sheet = ({
         `}
       >
         {/* Close Button */}
-        <button 
-          onClick={onClose}
-          className="absolute top-6 right-6 z-20 w-10 h-10 rounded-2xl bg-invert/5 hover:bg-invert/10 flex items-center justify-center transition-all hover:rotate-90 active:scale-90"
-        >
-          <Icon name="x" size={20} />
-        </button>
-
+        <Button onClick={onClose} icon="x" className="absolute top-5 left-5 z-20 w-10 h-10 bg-surface-muted text-invert/40" />
         {children}
       </div>
     </div>

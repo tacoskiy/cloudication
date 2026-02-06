@@ -7,6 +7,29 @@ import { apiFetch } from "@/lib/apiFetch";
 import { getOrCreateClientId } from "@/lib/cookie";
 import { CreateCloudPostRequest, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
 import PermissionModal from "@/features/shared/components/PermissionModal";
+import { useRouter } from "next/navigation";
+
+
+const PLACEHOLDERS = [
+  // 名前・見立て
+  "この雲、何に見える？",
+  "ふわふわな、わたあめみたい",
+  "空を飛ぶクジラを発見！",
+  "ソフトクリーム、食べたくなっちゃった",
+
+  // 今の気持ち
+  "今の気分は、こんな感じ",
+  "見上げたら、少し元気が出た",
+  "のんびり、空を眺めていたいな",
+  "今日の空は、特別きれいだね",
+
+  // 大喜利・ネタ
+  "新種の未確認浮遊物体…？",
+  "ここだけの話、実はあそこに宝が…",
+  "空からの、ひそひそ話",
+  "自由すぎる、雲のカタチ",
+];
+
 
 interface PostFormViewProps {
   imageToken: string;
@@ -16,7 +39,11 @@ interface PostFormViewProps {
 }
 
 const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewProps) => {
+  const router = useRouter();
   const [content, setContent] = useState("");
+  const [placeholder] = useState(() => PLACEHOLDERS[Math.floor(Math.random() * PLACEHOLDERS.length)]);
+
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -64,7 +91,7 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
 
     try {
       const clientId = getOrCreateClientId();
-      
+
       await apiFetch<CreateCloudPostResponse, CreateCloudPostRequest>("/api/cloud-posts", {
         method: "POST",
         body: {
@@ -81,36 +108,45 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
       setError(err instanceof Error ? err.message : "投稿に失敗しました");
     } finally {
       setIsSubmitting(false);
+      router.push("/");
     }
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full">
-      <PermissionModal 
-        isOpen={isPermissionModalOpen} 
-        onClose={() => setIsPermissionModalOpen(false)} 
+    <div className="flex flex-col gap-4 w-full">
+      <PermissionModal
+        isOpen={isPermissionModalOpen}
+        onClose={() => setIsPermissionModalOpen(false)}
         type="location"
         onRetry={requestLocation}
       />
+
+      <div className="py-2 flex justify-center">
+        <h2 className="text-md font-medium text-invert/40">雲にコメントをつけよう</h2>
+      </div>
+
       {imageUrl && (
-          <img 
-            src={imageUrl} 
-            alt="Captured" 
-            className="w-auto h-64 aspect-auto object-cover mask-cloud"
+        <div className="relative group h-fit bg-alert">
+          <img
+            src={imageUrl}
+            alt="Captured"
+            className="w-full aspect-4/3 object-cover mask-cloud bg-surface-muted"
           />
+        </div>
       )}
 
-      <div className="space-y-4">
+
+      <div className="flex flex-col gap-2">
         <div className="relative">
           <textarea
             value={content}
-            onChange={(e) => setContent(e.target.value.slice(0, 280))}
-            placeholder="この雲、なんて言うんだろう？"
-            className="w-full h-32 bg-invert/5 border border-invert/10 rounded-[32px] p-6 text-base text-invert placeholder:text-invert/20 focus:outline-none focus:border-brand/40 transition-all resize-none leading-relaxed"
+            onChange={(e) => setContent(e.target.value.slice(0, 28))}
+            placeholder={placeholder}
+            className="w-full h-32 bg-invert/5 border border-invert/10 rounded-[24px] p-6 text-base text-invert placeholder:text-invert/20 focus:outline-none focus:border-brand/40 transition-all resize-none leading-relaxed"
           />
-          <div className="absolute bottom-4 right-6 pointer-events-none">
-            <span className={`text-[10px] font-black px-2 py-1 rounded-full ${content.length > 200 ? 'bg-alert/12 text-alert' : 'bg-invert/5 text-invert/40'}`}>
-              {content.length}/280
+          <div className="absolute bottom-0 right-0 px-4 py-6 pointer-events-none">
+            <span className={`text-[10px] font-black px-2 py-1 rounded-full ${content.length > 28 ? 'bg-alert/12 text-alert' : 'bg-invert/5 text-invert/40'}`}>
+              {content.length}/28
             </span>
           </div>
         </div>
@@ -121,22 +157,14 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
             <p className="text-alert text-[10px] font-bold">{error}</p>
           </div>
         )}
+        <Button
+          onClick={handleSubmit}
+          label={isSubmitting ? "送信中..." : "世界に流す"}
+          icon="cloudication"
+          className="w-full h-auto py-6 rounded-[24px]! font-bold bg-brand text-surface shadow-lg shadow-brand/20 active:scale-95 transition-all"
+          disabled={isSubmitting || !content.trim()}
+        />
 
-        <div className="flex gap-2">
-          <Button
-            onClick={onBack}
-            className="flex-1 h-14 rounded-2xl font-bold text-invert/60 bg-invert/5"
-            label="戻る"
-            disabled={isSubmitting}
-          />
-          <Button
-            onClick={handleSubmit}
-            label={isSubmitting ? "送信中..." : "世界に流す"}
-            icon="post"
-            className="flex-2 h-14 rounded-2xl font-bold bg-brand text-surface shadow-lg shadow-brand/20 active:scale-95 transition-all"
-            disabled={isSubmitting || !content.trim()}
-          />
-        </div>
       </div>
     </div>
   );

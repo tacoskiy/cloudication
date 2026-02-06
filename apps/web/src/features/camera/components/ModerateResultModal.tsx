@@ -3,6 +3,7 @@ import ModerationResultView from "./ModerationResultView";
 import PostFormView from "./PostFormView";
 import { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
 import Sheet from "@/features/shared/components/Sheet";
+import { useEffect } from "react";
 
 interface ModerateResultModalProps {
   result: ImageModerateResponse | null;
@@ -15,14 +16,22 @@ const ModerateResultModal = ({
   onClose,
   isOpen,
 }: ModerateResultModalProps) => {
-  const { view, articleAnimClass, switchView } = useModerateModalFlow(isOpen);
+  const { view, articleAnimClass, switchView, setView } = useModerateModalFlow(isOpen);
+
+  useEffect(() => {
+    if (isOpen && result?.status === "accepted" && view === "result") {
+      // 成功時は即座に投稿フォームへ
+      setView("post");
+    }
+  }, [isOpen, result, view, setView]);
+
 
   return (
-    <Sheet 
-      isOpen={isOpen} 
-      onClose={onClose} 
+    <Sheet
+      isOpen={isOpen}
+      onClose={onClose}
       maxWidth="max-w-sm"
-      className={`p-5 ${articleAnimClass}`}
+      className={`p-6 ${articleAnimClass}`}
     >
       {view === "result" && (
         <ModerationResultView

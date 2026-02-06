@@ -10,6 +10,8 @@ import PostDetailModal from "@/features/posts/components/PostDetailModal";
 import PermissionModal from "@/features/shared/components/PermissionModal";
 import Button from "@/features/shared/components/Button";
 import PostMarker from "./PostMarker";
+import { MOCK_POSTS } from "../constants/mockPosts";
+
 
 type Location = {
   latitude: number;
@@ -25,8 +27,10 @@ export default function MapView() {
   const [location, setLocation] = useState<Location | null>(null);
   const [posts, setPosts] = useState<CloudPost[]>([]);
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  const [overlappingPostIds, setOverlappingPostIds] = useState<Set<string>>(new Set());
   const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
   const mapRef = useRef<MapRef>(null);
+
   const router = useRouter();
 
   const requestLocation = async (force = false) => {
@@ -78,6 +82,37 @@ export default function MapView() {
     );
   };
 
+  const updateOverlaps = () => {
+    const map = mapRef.current?.getMap();
+    if (!map || posts.length === 0) return;
+
+    const overlaps = new Set<string>();
+    const pixelCoords = posts.map(post => {
+      if (post.lat === null || post.lng === null) return null;
+      // Mapbox の raw instance から投影座標を取得
+      const point = map.project([post.lng, post.lat]);
+      return { id: post.id, x: point.x, y: point.y, lat: post.lat };
+    }).filter((p): p is NonNullable<typeof p> => p !== null);
+
+    // 距離の閾値 (ピクセル)
+    const THRESHOLD = 48;
+
+    for (let i = 0; i < pixelCoords.length; i++) {
+      for (let j = i + 1; j < pixelCoords.length; j++) {
+        const p1 = pixelCoords[i];
+        const p2 = pixelCoords[j];
+
+        const dist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+
+        if (dist < THRESHOLD) {
+          overlaps.add(p1.id);
+          overlaps.add(p2.id);
+        }
+      }
+    }
+    setOverlappingPostIds(new Set(overlaps));
+  };
+
   useEffect(() => {
     // 投稿一覧を取得
     const fetchPosts = async () => {
@@ -85,12 +120,35 @@ export default function MapView() {
         const data = await apiFetch<CloudPost[]>("/api/cloud-posts");
         setPosts(data);
       } catch (err) {
-        console.error("Failed to fetch posts for map:", err);
+        console.error("Failed to fetch posts for map, using mock data:", err);
+        setPosts(MOCK_POSTS);
       }
     };
     fetchPosts();
     requestLocation();
   }, []);
+
+  const handleMarkerClick = (post: CloudPost) => {
+    if (overlappingPostIds.has(post.id)) {
+      // 重まっている場合は、その地点を中心にズームイン
+      mapRef.current?.flyTo({
+        center: [post.lng!, post.lat!],
+        zoom: Math.max((mapRef.current?.getZoom() || 0) + 2, 12),
+        duration: 1000,
+        essential: true
+      });
+    } else {
+      // 重まっていない場合は詳細を開く
+      setSelectedPostId(post.id);
+    }
+  };
+
+  // posts が更新されたら重なりを計算
+  useEffect(() => {
+    updateOverlaps();
+  }, [posts]);
+
+
 
   // 🔑 位置が確定するまで Map を描画しない
   if (!location) {
@@ -105,7 +163,7 @@ export default function MapView() {
         type="location"
         onRetry={() => requestLocation(true)}
       />
-      <div className="relative w-full h-[80vh] rounded-4xl overflow-hidden shadow-2xl border border-white/10">
+      <div className="relative w-full h-[80vh] rounded-[48px] overflow-clip border border-surface/24">
         <Map
           ref={mapRef}
           initialViewState={{
@@ -116,14 +174,25 @@ export default function MapView() {
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
           reuseMaps
           attributionControl={false}
-          maxZoom={20}
-          minZoom={10}
+          maxZoom={30}
+          minZoom={4}
+          dragRotate={false}
+          pitchWithRotate={false}
+          touchPitch={false}
+          onLoad={updateOverlaps}
+          onMove={updateOverlaps}
+          onZoom={updateOverlaps}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
         >
+
           {/* 現在地マーカー */}
           <Marker {...location} anchor="center">
             <div className="relative flex items-center justify-center">
-              <div className="absolute w-8 h-8 bg-blue-500/20 rounded-full animate-ping" />
-              <div className="relative w-4 h-4 rounded-full bg-blue-500 border-2 border-white shadow-lg" />
+              <div className="absolute w-8 h-8 bg-brand/20 rounded-full animate-ping" />
+              <div className="relative w-4 h-4 rounded-full bg-brand border-2 border-white shadow-lg" />
             </div>
           </Marker>
 
@@ -132,29 +201,32 @@ export default function MapView() {
             <PostMarker
               key={post.id}
               post={post}
-              onClick={setSelectedPostId}
+              onClick={() => handleMarkerClick(post)}
+              isOverlapping={overlappingPostIds.has(post.id)}
+              shouldDelay={posts.length > 1}
             />
           ))}
+
+
         </Map>
 
         {/* 撮影ボタン (フローティング) */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 w-full max-w-[280px] px-6">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10 w-full p-3 bg-linear-to-b from-transparent to-surface">
           <Button
             onClick={() => router.push("/camera")}
             icon="camera"
-            label="雲をキャッチする"
-            className="w-full h-16 bg-brand-accent text-invert font-bold text-lg shadow-[0_8px_32px_rgba(145,203,62,0.4)] hover:scale-105 active:scale-95 transition-all rounded-2xl border-4 border-white/20"
+            label="いい雲見つけた？"
+            className="relative z-1 font-bold w-full h-20 bg-brand-accent text-surface"
           />
         </div>
       </div>
 
       {/* ポスト詳細モーダル */}
-      {selectedPostId && (
-        <PostDetailModal
-          postId={selectedPostId}
-          onClose={() => setSelectedPostId(null)}
-        />
-      )}
+      <PostDetailModal
+        postId={selectedPostId || ""}
+        onClose={() => setSelectedPostId(null)}
+      />
     </>
+
   );
 }

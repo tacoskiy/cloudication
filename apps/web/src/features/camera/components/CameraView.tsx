@@ -148,7 +148,7 @@ const CameraView = () => {
 
 
   return (
-    <div className="w-full h-[80vh] p-3 bg-surface/24 rounded-[48px] overflow-clip relative flex flex-col justify-end gap-3">
+    <div className="w-full h-[80vh] p-3 bg-surface/24 rounded-[48px] overflow-clip border border-invert/48 relative flex flex-col justify-end gap-3">
       <ModerateResultModal result={moderateResult!} onClose={resetCapture} isOpen={isResultModalOpen} />
       <PermissionModal
         isOpen={isPermissionModalOpen}
@@ -172,14 +172,14 @@ const CameraView = () => {
 
       {/* クロップガイド (雲型のスポットライトビネット) */}
       {!camera.capturedImage && !isModerating && (
-        <div className="absolute inset-0 z-1 bg-black/60 mask-cloud-hole pointer-events-none" />
+        <div className="absolute inset-0 z-1 bg-black/60 mask-cloud-hole pointer-events-none backdrop-blur-[3px]" />
       )}
 
       <div className="w-full flex gap-3 relative z-2">
         <Button
           onClick={handleExit}
           icon="x"
-          className="button-white-overlay w-auto h-20 aspect-square"
+          className="button-white-overlay w-auto h-20 aspect-square rounded-full"
           disabled={isModerating}
         />
 
@@ -187,7 +187,7 @@ const CameraView = () => {
           onClick={capture}
           icon={isModerating ? undefined : "camera"}
           label={isModerating ? "解析中..." : "写真を撮る"}
-          className="relative z-1 font-bold w-full h-20 bg-brand-accent"
+          className="relative z-1 font-bold w-full h-20 bg-brand-accent text-surface rounded-full"
           disabled={isModerating || !!camera.capturedImage}
         />
       </div>

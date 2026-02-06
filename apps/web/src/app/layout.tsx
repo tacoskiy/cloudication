@@ -21,11 +21,11 @@ export const metadata: Metadata = {
   description: "匿名雲投稿アプリ",
 };
 
-export default function RootLayout({ children }:Readonly<{ children: React.ReactNode; }>){
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="ja">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Header/>
+        <Header />
         <AppProviders>
           <main>
             {children}

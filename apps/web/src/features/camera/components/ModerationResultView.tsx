@@ -18,24 +18,29 @@ const ModerationResultView = ({
   return (
     <>
       {result.status === "rejected" && (
-        <div className="flex flex-col items-center gap-6">
-          <div className="rounded-2xl bg-alert/12 p-4">
+        <div className="flex flex-col items-center text-center gap-6">
+          <div className="w-20 h-20 rounded-[32px] bg-alert/12 flex items-center justify-center">
             <Icon
               name="not_enough_clouds"
-              size={24}
-              className="h-12 w-12 text-alert"
+              size={40}
+              className="text-alert"
             />
           </div>
 
-          <h2 className="text-center text-lg font-bold text-alert">
-            {result.reasons.join(" / ")}
-          </h2>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-alert uppercase">
+              投稿できない写真です！
+            </h2>
+            <p className="text-sm text-invert/60 font-medium leading-relaxed">
+              {result.reasons.join(" / ")}
+            </p>
+          </div>
 
-          <div className="flex flex-col items-start gap-2">
+          <div className="flex flex-wrap justify-center gap-2">
             {result.suggestions.map((s) => (
               <p
                 key={s}
-                className="rounded-3xl bg-alert/12 px-4 py-2 text-sm font-medium text-alert"
+                className="rounded-full bg-alert/8 px-4 py-1.5 text-xs font-bold text-alert border border-alert/10"
               >
                 {s}
               </p>
@@ -45,64 +50,81 @@ const ModerationResultView = ({
           <Button
             onClick={onClose}
             icon="camera"
-            className="w-full rounded-xl bg-alert py-6 font-bold"
+            className="w-full h-auto py-6 rounded-[24px]! bg-alert text-surface font-bold text-lg"
             label="撮り直す"
           />
         </div>
       )}
 
+
       {result.status === "accepted_with_warning" && (
-        <div className="flex flex-col items-center gap-6">
-          <div className="rounded-2xl bg-warning/12 p-4">
-            <Icon name="face" size={24} className="h-12 w-12 text-warning" />
+        <div className="flex flex-col items-center text-center gap-6">
+          <div className="w-20 h-20 rounded-[32px] bg-warning/12 flex items-center justify-center">
+            <Icon name="face" size={40} className="text-warning" />
           </div>
 
-          <h2 className="text-center text-lg font-bold text-warning">
-            {result.reasons.join(" / ")}
-          </h2>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-warning uppercase">
+              ちょっと待って！
+            </h2>
+            <p className="text-sm text-invert/60 font-medium leading-relaxed">
+              {result.reasons.join(" / ")}
+            </p>
+          </div>
 
-          <div className="flex flex-col items-start gap-2">
+          <div className="flex flex-wrap justify-center gap-2">
             {result.suggestions.map((s) => (
               <p
                 key={s}
-                className="rounded-3xl bg-warning/12 px-4 py-2 text-sm font-medium text-warning"
+                className="rounded-full bg-warning/8 px-4 py-1.5 text-xs font-bold text-warning border border-warning/10"
               >
                 {s}
               </p>
             ))}
           </div>
 
-          <div className="flex w-full gap-2">
-            <Button
-              onClick={onSwitchToPost}
-              icon="post"
-              className="w-full rounded-xl bg-warning/12 py-6 font-bold text-warning"
-              label="投稿する"
-            />
+          <div className="flex w-full gap-3">
             <Button
               onClick={onClose}
               icon="camera"
-              className="w-full rounded-xl bg-warning py-6 font-bold text-surface"
+              className="flex-2 py-6 whitespace-nowrap rounded-[24px]! bg-surface-muted text-invert/40 font-bold"
               label="撮り直す"
+            />
+            <Button
+              onClick={onSwitchToPost}
+              icon="post"
+              className="flex-3 py-6 whitespace-nowrap rounded-[24px]! bg-warning text-surface font-bold text-lg"
+              label="投稿する"
             />
           </div>
         </div>
       )}
 
+
       {result.status === "accepted" && (
-        <div className="flex flex-col gap-6">
-          <h2 className="text-center text-lg font-bold text-invert">
-            投稿できます
-          </h2>
+        <div className="flex flex-col items-center text-center gap-6">
+          <div className="w-20 h-20 rounded-[40px] bg-brand/12 flex items-center justify-center animate-pulse">
+            <Icon name="post" size={40} className="text-brand" />
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-2xl font-black text-brand">
+              素晴らしい雲ですね！
+            </h2>
+            <p className="text-sm text-invert/60 font-medium leading-relaxed">
+              名前をつけて投稿できます
+            </p>
+          </div>
 
           <Button
             onClick={onSwitchToPost}
-            icon="post"
-            className="w-full rounded-xl py-6 font-bold bg-brand text-surface"
-            label="投稿する"
+            icon="cloudication"
+            className="w-full py-6 rounded-xl bg-brand text-surface font-bold text-lg shadow-lg shadow-brand/20"
+            label="投稿を作成"
           />
         </div>
       )}
+
     </>
   );
 };

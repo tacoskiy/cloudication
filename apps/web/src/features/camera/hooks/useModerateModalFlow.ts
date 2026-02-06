@@ -35,5 +35,7 @@ export const useModerateModalFlow = (isOpen: boolean) => {
     view,
     articleAnimClass,
     switchView,
+    setView,
   };
 };
+
