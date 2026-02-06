@@ -5,7 +5,6 @@ import helmet from "helmet";
 import { rateLimit } from "express-rate-limit";
 
 import imageModerateRouter from "./features/image-moderate/image-moderate.route";
-import sampleRouter from "./routes/sample";
 import cloudPostRouter from "./features/cloud-post/cloud-post.route";
 import likesRouter from "./features/cloud-post/likes.route";
 
@@ -46,7 +45,6 @@ app.get("/api/hello", (_req, res) => {
   });
 });
 
-app.use("/samples", sampleRouter);
 app.use("/api/cloud-posts", cloudPostRouter);
 app.use("/api/likes", likesRouter);
 app.use("/api/image-moderate", imageModerateRouter);
