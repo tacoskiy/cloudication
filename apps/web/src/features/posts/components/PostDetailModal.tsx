@@ -5,10 +5,10 @@ import { CloudPost } from "@cloudication/shared-types/cloud-post";
 import { ToggleLikeResponse } from "@cloudication/shared-types/likes";
 import { apiFetch } from "@/lib/apiFetch";
 import { getOrCreateClientId } from "@/lib/cookie";
-import Icon from "@/components/common/Icon";
-import Button from "@/components/common/Button";
-import Sheet from "@/components/common/Sheet";
-import CaptionTag from "@/components/common/CaptionTag";
+import Icon from "@/features/shared/components/Icon";
+import Button from "@/features/shared/components/Button";
+import Sheet from "@/features/shared/components/Sheet";
+import CaptionTag from "@/features/shared/components/CaptionTag";
 
 interface PostDetailModalProps {
   postId: string;

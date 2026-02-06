@@ -1,5 +1,5 @@
-import Button from "@/components/common/Button";
-import Icon from "@/components/common/Icon";
+import Button from "@/features/shared/components/Button";
+import Icon from "@/features/shared/components/Icon";
 import { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
 
 interface ModerationResultViewProps {

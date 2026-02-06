@@ -2,7 +2,7 @@ import { useModerateModalFlow } from "../hooks/useModerateModalFlow";
 import ModerationResultView from "./ModerationResultView";
 import PostFormView from "./PostFormView";
 import { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
-import Sheet from "@/components/common/Sheet";
+import Sheet from "@/features/shared/components/Sheet";
 
 interface ModerateResultModalProps {
   result: ImageModerateResponse | null;

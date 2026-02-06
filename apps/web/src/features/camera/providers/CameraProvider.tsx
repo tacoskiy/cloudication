@@ -1,7 +1,7 @@
 "use client";
 
 import { useCamera } from "@/features/camera";
-import { CameraContext } from "@/contexts/useCameraContext";
+import { CameraContext } from "@/features/camera/contexts/useCameraContext";
 
 export const CameraProvider = ({
   children,

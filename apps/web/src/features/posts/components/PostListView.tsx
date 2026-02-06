@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { CloudPost } from "@cloudication/shared-types/cloud-post";
 import { apiFetch } from "@/lib/apiFetch";
-import Icon from "@/components/common/Icon";
-import Button from "@/components/common/Button";
+import Icon from "@/features/shared/components/Icon";
+import Button from "@/features/shared/components/Button";
 import PostDetailModal from "@/features/posts/components/PostDetailModal";
 
 const PostListView = () => {

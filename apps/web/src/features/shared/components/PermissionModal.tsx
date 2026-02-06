@@ -1,8 +1,8 @@
 "use client";
 
-import Sheet from "@/components/common/Sheet";
-import Button from "@/components/common/Button";
-import Icon from "@/components/common/Icon";
+import Sheet from "@/features/shared/components/Sheet";
+import Button from "@/features/shared/components/Button";
+import Icon from "@/features/shared/components/Icon";
 
 interface PermissionModalProps {
   isOpen: boolean;

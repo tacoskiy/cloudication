@@ -7,8 +7,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { apiFetch } from "@/lib/apiFetch";
 import { CloudPost } from "@cloudication/shared-types/cloud-post";
 import PostDetailModal from "@/features/posts/components/PostDetailModal";
-import PermissionModal from "@/features/camera/components/PermissionModal";
-import Button from "@/components/common/Button";
+import PermissionModal from "@/features/shared/components/PermissionModal";
+import Button from "@/features/shared/components/Button";
 
 type Location = {
   latitude: number;
