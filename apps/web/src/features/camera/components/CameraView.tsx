@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
 
 import Button from "@/features/shared/components/Button";
 
@@ -11,8 +13,11 @@ import ModerateResultModal from "./ModerateResultModal";
 import PermissionModal from "@/features/shared/components/PermissionModal";
 
 const CameraView = () => {
+  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
+
   const shutterRef = useRef<HTMLDivElement>(null);
+  const isFadingInRef = useRef(false);
   const [isModerating, setIsModerating] = useState(false);
   const [moderateResult, setModerateResult] = useState<ImageModerateResponse | null>(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
@@ -21,24 +26,22 @@ const CameraView = () => {
   const camera = useCameraContext();
 
   useEffect(() => {
-    const checkAndAttach = async () => {
-      const status = await camera.getPermissionStatus?.();
-      if (status === "granted") {
-        await camera.attachCamera(videoRef);
-        playFadeIn();
-      } else {
-        setIsPermissionModalOpen(true);
-      }
-    };
-    checkAndAttach();
-
-    const handleVisibility = () => {
+    const handleVisibility = async () => {
       if (document.hidden) {
         camera.detachCamera(videoRef);
+        isFadingInRef.current = false; // 次回表示時にまたフェードインさせる
       } else {
-        camera.attachCamera(videoRef).then(() => playFadeIn());
+        const status = await camera.getPermissionStatus?.();
+        if (status === "granted") {
+          await camera.attachCamera(videoRef);
+        } else {
+
+          setIsPermissionModalOpen(true);
+        }
       }
     };
+
+    handleVisibility();
 
     document.addEventListener("visibilitychange", handleVisibility);
     return () => {
@@ -46,6 +49,7 @@ const CameraView = () => {
       camera.detachCamera(videoRef, true); // unmount時はストリームを完全に停止
     };
   }, []);
+
 
   const dataURLtoBlob = (dataurl: string) => {
     const arr = dataurl.split(",");
@@ -72,14 +76,16 @@ const CameraView = () => {
 
   const playFadeIn = () => {
     const el = shutterRef.current;
-    if (!el) return;
+    if (!el || isFadingInRef.current) return;
 
+    isFadingInRef.current = true;
     el.animate([{ opacity: 1 }, { opacity: 0 }], {
       duration: 600,
       easing: "ease-out",
       fill: "forwards",
     });
   };
+
 
   const capture = async () => {
     if (!videoRef.current || isModerating) return;
@@ -133,6 +139,14 @@ const CameraView = () => {
     setIsResultModalOpen(false);
   };
 
+  const handleExit = () => {
+    if (camera.capturedImage) {
+      camera.setCapturedImage(null);
+    }
+    router.push("/");
+  };
+
+
   return (
     <div className="w-full h-[80vh] p-3 bg-surface/24 rounded-[48px] overflow-clip relative flex flex-col justify-end gap-3">
       <ModerateResultModal result={moderateResult!} onClose={resetCapture} isOpen={isResultModalOpen} />
@@ -151,8 +165,10 @@ const CameraView = () => {
         autoPlay
         playsInline
         muted
+        onPlaying={() => playFadeIn()}
         className="w-full h-full object-cover absolute top-0 left-0 z-0 transition-all duration-100"
       ></video>
+
 
       {/* クロップガイド (雲型のスポットライトビネット) */}
       {!camera.capturedImage && !isModerating && (
@@ -161,7 +177,7 @@ const CameraView = () => {
 
       <div className="w-full flex gap-3 relative z-2">
         <Button
-          onClick={resetCapture}
+          onClick={handleExit}
           icon="x"
           className="button-white-overlay w-auto h-20 aspect-square"
           disabled={isModerating}
