@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
 
 import imageModerateRouter from "./features/image-moderate/image-moderate.route";
 import sampleRouter from "./routes/sample";
@@ -11,8 +13,26 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+// Security Middlewares
+app.use(helmet());
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+// Rate Limiting (General)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `window`
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { error: "リクエスト制限を超えました。しばらく時間をおいてお試しください。" },
+});
+app.use(limiter);
 
 const PORT = Number(process.env.PORT) || 8000;
 app.listen(PORT, () => {
@@ -30,3 +50,12 @@ app.use("/samples", sampleRouter);
 app.use("/api/cloud-posts", cloudPostRouter);
 app.use("/api/likes", likesRouter);
 app.use("/api/image-moderate", imageModerateRouter);
+
+// Global Error Handler
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error("[Unhandled Error]", err);
+  const status = err.status || err.statusCode || 500;
+  res.status(status).json({
+    error: err.message || "予期せぬエラーが発生しました",
+  });
+});

@@ -9,9 +9,9 @@ const nextConfig: NextConfig = {
   },
 
   /**
-   * 本番 Docker / standalone 対応するなら有効
+   * 本番 Docker / standalone 対応
    */
-  // output: "standalone",
+  output: "standalone",
 };
 
 export default nextConfig;

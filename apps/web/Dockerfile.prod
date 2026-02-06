@@ -1,0 +1,49 @@
+# Build Stage
+FROM node:20-slim AS builder
+WORKDIR /app
+
+# Install dependencies (monorepo wide)
+COPY package.json package-lock.json ./
+COPY apps/web/package.json ./apps/web/
+COPY apps/api/package.json ./apps/api/
+COPY packages/shared-types/package.json ./packages/shared-types/
+RUN npm ci
+
+# Copy source files
+COPY . .
+
+# Build shared types
+RUN npm run build:shared
+
+# Build web app
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npm run build:web
+
+# Production Stage
+FROM node:20-slim AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Set the correct permission for prerender cache
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
+
+# Leverage standalone output
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# server.js is created by next build when output is "standalone"
+CMD ["node", "apps/web/server.js"]
