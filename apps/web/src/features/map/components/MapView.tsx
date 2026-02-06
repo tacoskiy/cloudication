@@ -9,6 +9,7 @@ import { CloudPost } from "@cloudication/shared-types/cloud-post";
 import PostDetailModal from "@/features/posts/components/PostDetailModal";
 import PermissionModal from "@/features/shared/components/PermissionModal";
 import Button from "@/features/shared/components/Button";
+import PostMarker from "./PostMarker";
 
 type Location = {
   latitude: number;
@@ -98,9 +99,9 @@ export default function MapView() {
 
   return (
     <>
-      <PermissionModal 
-        isOpen={isPermissionModalOpen} 
-        onClose={() => setIsPermissionModalOpen(false)} 
+      <PermissionModal
+        isOpen={isPermissionModalOpen}
+        onClose={() => setIsPermissionModalOpen(false)}
         type="location"
         onRetry={() => requestLocation(true)}
       />
@@ -128,42 +129,11 @@ export default function MapView() {
 
           {/* 投稿マーカー（サムネイル） */}
           {posts.map((post) => (
-            post.lat !== null && post.lng !== null && (
-              <Marker
-                key={post.id}
-                latitude={post.lat}
-                longitude={post.lng}
-                anchor="bottom"
-              >
-                <div 
-                  className="group relative flex flex-col items-center cursor-pointer active:scale-95 transition-transform"
-                  onClick={() => setSelectedPostId(post.id)}
-                >
-                  {/* サムネイル本体 */}
-                  <div 
-                    className="w-12 h-10 shadow-xl overflow-hidden bg-white transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1 flex items-center justify-center p-0.5"
-                  >
-                    <img
-                      src={post.image_url}
-                      alt=""
-                      className="w-full h-full object-cover mask-cloud"
-                      loading="lazy"
-                    />
-                  </div>
-                  {/* 吹き出しの尻尾 */}
-                  <div className="w-2 h-2 bg-white rotate-45 -mt-1 shadow-lg" />
-                  
-                  {/* ホバー時の簡易表示（オプション） */}
-                  <div className="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                    <div className="bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 whitespace-nowrap">
-                      <p className="text-[10px] text-white font-bold leading-tight">
-                        {post.content.length > 15 ? post.content.slice(0, 15) + "..." : post.content}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </Marker>
-            )
+            <PostMarker
+              key={post.id}
+              post={post}
+              onClick={setSelectedPostId}
+            />
           ))}
         </Map>
 
@@ -180,9 +150,9 @@ export default function MapView() {
 
       {/* ポスト詳細モーダル */}
       {selectedPostId && (
-        <PostDetailModal 
-          postId={selectedPostId} 
-          onClose={() => setSelectedPostId(null)} 
+        <PostDetailModal
+          postId={selectedPostId}
+          onClose={() => setSelectedPostId(null)}
         />
       )}
     </>

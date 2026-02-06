@@ -17,23 +17,22 @@ interface PostDetailModalProps {
 
 const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
   const [post, setPost] = useState<CloudPost | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isLiking, setIsLiking] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!postId) return;
-    
+    if (!postId) {
+      setPost(null);
+      return;
+    }
+
     const fetchPost = async () => {
-      setIsLoading(true);
       try {
         const data = await apiFetch<CloudPost>(`/api/cloud-posts/${postId}`);
         setPost(data);
       } catch (err) {
         console.error("Failed to fetch post detail:", err);
         setError("投稿の読み込みに失敗しました");
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchPost();
@@ -50,7 +49,7 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
         body: { client_id: clientId },
       });
 
-      setPost((prev) => 
+      setPost((prev) =>
         prev ? { ...prev, likes_count: result.likes_count } : null
       );
     } catch (err) {
@@ -62,24 +61,18 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
 
   return (
     <Sheet isOpen={!!postId} onClose={onClose}>
-      {isLoading ? (
-        <div className="p-20 flex flex-col items-center justify-center gap-4">
-          <div className="animate-spin text-brand">
-            <Icon name="cloudication" size={40} />
-          </div>
-        </div>
-      ) : error || !post ? (
+      {error || (!post && postId) ? (
         <div className="p-12 flex flex-col items-center gap-6">
-          <p className="text-invert/40 font-bold">{error || "見つかりませんでした"}</p>
+          <p className="text-invert/40 font-bold">{error || "読み込み中..."}</p>
           <Button onClick={onClose} label="閉じる" className="bg-invert text-surface px-8 rounded-full" />
         </div>
-      ) : (
+      ) : post ? (
         <>
           {/* Image Section */}
           <div className="aspect-4/3 relative bg-invert/5 p-4">
-            <img 
-              src={post.image_url} 
-              alt="Cloud" 
+            <img
+              src={post.image_url}
+              alt="Cloud"
               className="w-full h-full object-cover mask-cloud shadow-inner rounded-3xl"
             />
             <div className="absolute top-8 left-8">
@@ -111,12 +104,11 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <button 
+              <button
                 onClick={handleToggleLike}
                 disabled={isLiking}
-                className={`group flex items-center gap-3 px-6 h-14 rounded-2xl transition-all ${
-                  isLiking ? 'opacity-50' : 'hover:scale-105 active:scale-95'
-                } bg-brand/5 border border-brand/10`}
+                className={`group flex items-center gap-3 px-6 h-14 rounded-2xl transition-all ${isLiking ? 'opacity-50' : 'hover:scale-105 active:scale-95'
+                  } bg-brand/5 border border-brand/10`}
               >
                 <div className="text-brand">
                   <Icon name="post" size={24} />
@@ -133,7 +125,7 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
             </div>
           </div>
         </>
-      )}
+      ) : null}
     </Sheet>
   );
 };
