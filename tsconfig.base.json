@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    /* 基本 */
+    "target": "ES2022",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    /* 厳格さ */
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    /* Monorepo & DX */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "apps/web/src/*"
+      ],
+      "@api/*": [
+        "apps/api/src/*"
+      ],
+      "@shared/*": [
+        "packages/*/src"
+      ]
+    },
+    /* 型管理 */
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
+  }
+}

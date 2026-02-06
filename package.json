@@ -1,0 +1,21 @@
+{
+  "name": "cloudication-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm --workspace apps/web run dev",
+    "dev:api": "npm --workspace apps/api run dev",
+    "build:shared": "npm --workspace packages/shared-types run build",
+    "build:web": "npm --workspace apps/web run build",
+    "build:api": "npm --workspace apps/api run build",
+    "build": "npm run build:shared && npm run build:web && npm run build:api"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "@types/node": "^20"
+  }
+}

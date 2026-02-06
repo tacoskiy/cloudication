@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@theme {
+  /* colors */
+  --color-surface: #FDFFFC;
+  --color-surface-muted: #F5F5F5;
+  --color-invert: #011502;
+  --color-brand: #17BEBB;
+  --color-brand-muted: #0E7C7B;
+  --color-brand-accent: #91CB3E;
+  --color-alert: #E5363A;
+  --color-warning: #EB8E0C;
+  --color-pink: #FF4D6D;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  @apply bg-brand text-invert font-sans antialiased;
+}
+
+.button-white-overlay {
+  @apply text-surface bg-surface/24 backdrop-blur-md;
+}
+
+.mask-cloud {
+  mask-image: url('data:image/svg+xml;utf8,<svg width="300" height="230" viewBox="0 0 300 230" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M162.963 0C214.1 0 255.556 41.4551 255.556 92.5926C255.556 100.569 254.546 108.309 252.649 115.694C279.559 120.449 300 143.948 300 172.222C300 203.925 274.302 229.624 242.6 229.628L92.5926 229.63C41.4551 229.63 0 188.175 0 137.037C0 88.9343 36.6809 49.3997 83.5974 44.8767C99.7994 17.9858 129.28 0 162.963 0Z" fill="black"/></svg>');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url('data:image/svg+xml;utf8,<svg width="300" height="230" viewBox="0 0 300 230" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M162.963 0C214.1 0 255.556 41.4551 255.556 92.5926C255.556 100.569 254.546 108.309 252.649 115.694C279.559 120.449 300 143.948 300 172.222C300 203.925 274.302 229.624 242.6 229.628L92.5926 229.63C41.4551 229.63 0 188.175 0 137.037C0 88.9343 36.6809 49.3997 83.5974 44.8767C99.7994 17.9858 129.28 0 162.963 0Z" fill="black"/></svg>');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
+.mask-cloud-hole {
+  mask-image: linear-gradient(black, black), 
+              url('data:image/svg+xml;utf8,<svg width="300" height="230" viewBox="0 0 300 230" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M162.963 0C214.1 0 255.556 41.4551 255.556 92.5926C255.556 100.569 254.546 108.309 252.649 115.694C279.559 120.449 300 143.948 300 172.222C300 203.925 274.302 229.624 242.6 229.628L92.5926 229.63C41.4551 229.63 0 188.175 0 137.037C0 88.9343 36.6809 49.3997 83.5974 44.8767C99.7994 17.9858 129.28 0 162.963 0Z" fill="black"/></svg>');
+  mask-size: 100% 100%, 256px 256px;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-composite: exclude;
+  -webkit-mask-image: linear-gradient(black, black), 
+                      url('data:image/svg+xml;utf8,<svg width="300" height="230" viewBox="0 0 300 230" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M162.963 0C214.1 0 255.556 41.4551 255.556 92.5926C255.556 100.569 254.546 108.309 252.649 115.694C279.559 120.449 300 143.948 300 172.222C300 203.925 274.302 229.624 242.6 229.628L92.5926 229.63C41.4551 229.63 0 188.175 0 137.037C0 88.9343 36.6809 49.3997 83.5974 44.8767C99.7994 17.9858 129.28 0 162.963 0Z" fill="black"/></svg>');
+  -webkit-mask-size: 100% 100%, 256px 256px;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-composite: destination-out;
+}
+
+@keyframes entryTransform {
+  from {
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes entryOpacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.animate-sheet {
+  /* opacity は 0.4s で完了し、その後は forwards を指定しないことでクラス制御を優先させる */
+  animation: 
+    entryTransform 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    entryOpacity 0.4s ease-out;
+}
+
+.animate-sheet-exit {
+  animation: fadeOutDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-backdrop {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-backdrop-exit {
+  animation: fadeOut 0.4s ease-out forwards;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes marker-in {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(-45deg);
+    transform-origin: bottom;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(0deg);
+    transform-origin: bottom;
+  }
+}
+
+.animate-marker-in {
+  animation: marker-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.muted-shadow {
+  box-shadow: 0 6px 16px var(--color-brand-muted);
+}
