@@ -19,7 +19,7 @@ const PermissionModal = ({ isOpen, onClose, type, onRetry }: PermissionModalProp
       <div className="flex flex-col items-center text-center gap-6">
         <div className="w-20 h-20 rounded-[32px] bg-brand/12 flex items-center justify-center animate-pulse">
           <Icon
-            name={isCamera ? "camera" : "help"}
+            name={isCamera ? "camera" : "location"}
             size={40}
             className="text-brand"
           />
@@ -31,8 +31,8 @@ const PermissionModal = ({ isOpen, onClose, type, onRetry }: PermissionModalProp
           </h2>
           <p className="text-sm text-invert/60 leading-relaxed font-medium">
             {isCamera
-              ? "雲を撮影して解析するために、カメラへのアクセスが必要です。設定から許可をお願いします。"
-              : "雲を世界中のマップに届けるために、位置情報の共有が必要です。設定から許可をお願いします。"}
+              ? "雲を撮影するために、カメラへのアクセスが必要です。設定から許可をお願いします。"
+              : "自分の近くの雲を表示するために、位置情報の共有が必要です。設定から許可をお願いします。"}
           </p>
         </div>
 
@@ -43,12 +43,12 @@ const PermissionModal = ({ isOpen, onClose, type, onRetry }: PermissionModalProp
               onClose();
             }}
             label="許可する"
-            className="w-full h-14 rounded-2xl bg-brand text-surface font-bold text-lg"
+            className="w-full h-14 rounded-2xl! bg-brand text-surface font-bold text-lg"
           />
           <Button
             onClick={onClose}
             label="閉じる"
-            className="w-full h-14 rounded-2xl bg-surface-muted text-invert/40 font-bold"
+            className="w-full h-14 rounded-2xl! bg-surface-muted text-invert/40 font-bold"
           />
         </div>
 

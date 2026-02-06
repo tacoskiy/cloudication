@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Header from "@/features/layout/components/Header";
+import Policy from "@/features/layout/components/Policy";
 
 import AppProviders from "@/features/shared/providers/AppProviders";
 
@@ -30,6 +31,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main>
             {children}
           </main>
+          <footer>
+            <Policy />
+          </footer>
         </AppProviders>
       </body>
     </html>

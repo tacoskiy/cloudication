@@ -126,11 +126,11 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
       </div>
 
       {imageUrl && (
-        <div className="relative group h-fit bg-alert">
+        <div className="relative group h-fit">
           <img
             src={imageUrl}
             alt="Captured"
-            className="w-full aspect-4/3 object-cover mask-cloud bg-surface-muted"
+            className="w-full aspect-4/3 max-h-64 object-cover mask-cloud bg-surface-muted"
           />
         </div>
       )}

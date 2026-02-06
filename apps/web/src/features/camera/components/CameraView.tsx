@@ -156,6 +156,16 @@ const CameraView = () => {
         type="camera"
         onRetry={() => camera.attachCamera(videoRef, true)}
       />
+
+      {/* Guide Dialog */}
+      {!camera.capturedImage && !isModerating && (
+        <div className="absolute top-12 left-1/2 -translate-x-1/2 z-20 px-6 py-3 bg-invert/64 backdrop-blur-xl rounded-full border border-surface/12 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-700 ease-out">
+          <p className="text-surface font-bold text-[11px] tracking-widest whitespace-nowrap">
+            雲を枠内に収めてください
+          </p>
+        </div>
+      )}
+
       <div
         ref={shutterRef}
         className="pointer-events-none absolute inset-0 bg-black z-10 opacity-100"

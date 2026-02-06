@@ -164,6 +164,15 @@ export default function MapView() {
         onRetry={() => requestLocation(true)}
       />
       <div className="relative w-full h-[80vh] rounded-[48px] overflow-clip border border-surface/24">
+        {/* Guide Dialog */}
+        {!selectedPostId && (
+          <div className="absolute top-12 left-1/2 -translate-x-1/2 z-20 px-6 py-3 bg-invert/64 backdrop-blur-xl rounded-full border border-surface/12 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-700 ease-out pointer-events-none">
+            <p className="text-surface font-bold text-[11px] tracking-widest whitespace-nowrap">
+              気になる雲をタップ
+            </p>
+          </div>
+        )}
+
         <Map
           ref={mapRef}
           initialViewState={{
