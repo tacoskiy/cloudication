@@ -8,17 +8,18 @@ export interface IconProps
   name: IconName;
   size?: number | string;
   title?: string;
+  viewBox?: string;
 }
 
 const Icon = React.memo(
-  ({ name, size = 24, title, className, ...props }: IconProps) => {
+  ({ name, size = 24, title, className, viewBox, ...props }: IconProps) => {
     const px = typeof size === "number" ? `${size}px` : size;
 
     return (
       <svg
         width={px}
         height={px}
-        viewBox="0 0 20 20"
+        viewBox={viewBox ?? "0 0 20 20"}
         role={title ? "img" : "presentation"}
         aria-hidden={!title}
         fill="currentColor"

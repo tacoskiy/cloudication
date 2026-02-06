@@ -11,6 +11,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
 import ModerateResultModal from "./ModerateResultModal";
 import PermissionModal from "@/features/shared/components/PermissionModal";
+import Icon from "@/features/shared/components/Icon";
 
 const CameraView = () => {
   const router = useRouter();
@@ -185,6 +186,23 @@ const CameraView = () => {
         <div className="absolute inset-0 z-1 bg-black/60 mask-cloud-hole pointer-events-none backdrop-blur-[3px]" />
       )}
 
+      {/* Loading Overlay */}
+      {isModerating && (
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="flex flex-col items-center gap-10">
+            <div className="relative flex items-center justify-center">
+              <div className="absolute w-32 h-32 border-2 border-surface/10 border-t-surface/40 rounded-full animate-spin" />
+              <div className="text-surface animate-pulse">
+                <Icon name="analysis" className="text-surface" size={90} viewBox="0 0 401 284" />
+              </div>
+            </div>
+            <p className="text-surface font-bold text-center text-md uppercase opacity-40">
+              投稿できる画像か <br />チェックしています...
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="w-full flex gap-3 relative z-2">
         <Button
           onClick={handleExit}
@@ -195,9 +213,9 @@ const CameraView = () => {
 
         <Button
           onClick={capture}
-          icon={isModerating ? undefined : "camera"}
-          label={isModerating ? "解析中..." : "写真を撮る"}
-          className="relative z-1 font-bold w-full h-20 bg-brand-accent text-surface rounded-full"
+          icon="camera"
+          label="写真を撮る"
+          className="relative z-1 font-bold w-full h-20 bg-brand-accent text-surface rounded-full transition-all duration-300"
           disabled={isModerating || !!camera.capturedImage}
         />
       </div>
