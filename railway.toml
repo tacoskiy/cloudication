@@ -6,7 +6,7 @@ buildCommand = "npm run build:api"
 patterns = ["/apps/api/**"]
 
 [deploy]
-startCommand = "cd apps/api && npx prisma migrate deploy && node dist/index.js"
+startCommand = "cd apps/api && npx prisma migrate deploy && node dist/apps/api/src/index.js"
 healthcheckPath = "/api/hello"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"

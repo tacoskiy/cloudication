@@ -14,7 +14,6 @@
         "../../packages/shared-types/src/*"
       ]
     },
-    "rootDir": "src",
     "outDir": "dist",
     "noEmit": false
   },
