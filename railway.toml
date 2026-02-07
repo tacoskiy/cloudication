@@ -2,6 +2,9 @@
 builder = "NIXPACKS"
 buildCommand = "npm ci && npm run build:api"
 
+[watch]
+patterns = ["/apps/api/**"]
+
 [deploy]
 startCommand = "cd apps/api && npx prisma migrate deploy && node dist/index.js"
 healthcheckPath = "/api/hello"
