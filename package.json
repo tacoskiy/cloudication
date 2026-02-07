@@ -7,11 +7,11 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:web": "npm --workspace apps/web run dev",
-    "dev:api": "npm --workspace apps/api run dev",
-    "build:shared": "npm --workspace packages/shared-types run build",
-    "build:web": "npm --workspace apps/web run build",
-    "build:api": "npm --workspace apps/api run build",
+    "dev:web": "npm run --workspace=apps/web dev",
+    "dev:api": "npm run --workspace=apps/api dev",
+    "build:shared": "npm run --workspace=packages/shared-types build",
+    "build:web": "npm run --workspace=apps/web build",
+    "build:api": "npm run --workspace=apps/api build",
     "build": "npm run build:shared && npm run build:web && npm run build:api"
   },
   "devDependencies": {
