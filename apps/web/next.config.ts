@@ -1,15 +1,12 @@
+import path from "path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
 
-  turbopack: {
-    root: __dirname,
-  },
+  transpilePackages: ["@cloudication/shared-types"],
 
   output: "standalone",
-
-  transpilePackages: ["@cloudication/shared-types"],
 };
 
 export default nextConfig;
