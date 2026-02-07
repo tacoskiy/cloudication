@@ -62,6 +62,9 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
 const PORT = Number(process.env.PORT) || 8000;
 const HOST = process.env.HOST || "0.0.0.0";
 
+console.log(`[Config] Attempting to start server on ${HOST}:${PORT}`);
+console.log(`[Config] process.env.PORT is: ${process.env.PORT}`);
+
 app.listen(PORT, HOST, () => {
   console.log(`Backend is listening on http://${HOST}:${PORT}`);
 });
