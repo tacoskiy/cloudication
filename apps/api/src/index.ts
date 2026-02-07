@@ -12,6 +12,12 @@ dotenv.config();
 
 const app = express();
 
+// Healthcheck (Highest priority, no middleware)
+app.get("/", (_req, res) => {
+  console.log("[Healthcheck] Root endpoint hit (Priority)");
+  res.json({ status: "ok", service: "cloudication-api" });
+});
+
 // Security Middlewares
 app.use(helmet());
 app.use(
@@ -34,10 +40,6 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Routes
-app.get("/", (_req, res) => {
-  console.log("[Healthcheck] Root endpoint hit");
-  res.json({ status: "ok", service: "cloudication-api" });
-});
 
 app.get("/api/hello", (_req, res) => {
   res.json({
@@ -67,4 +69,23 @@ console.log(`[Config] process.env.PORT is: ${process.env.PORT}`);
 
 app.listen(PORT, HOST, () => {
   console.log(`Backend is listening on http://${HOST}:${PORT}`);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("[Lifecycle] Uncaught Exception:", err);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("[Lifecycle] Unhandled Rejection at:", promise, "reason:", reason);
+});
+
+process.on("SIGTERM", () => {
+  console.log("[Lifecycle] SIGTERM received. Shutting down gracefully...");
+  process.exit(0);
+});
+
+process.on("SIGINT", () => {
+  console.log("[Lifecycle] SIGINT received. Shutting down gracefully...");
+  process.exit(0);
 });
