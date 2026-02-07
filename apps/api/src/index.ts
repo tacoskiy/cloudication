@@ -33,11 +33,7 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-const PORT = Number(process.env.PORT) || 8000;
-app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
-});
-
+// Routes
 app.get("/api/hello", (_req, res) => {
   res.json({
     status: "ok",
@@ -56,4 +52,9 @@ app.use((err: any, _req: express.Request, res: express.Response, _next: express.
   res.status(status).json({
     error: err.message || "予期せぬエラーが発生しました",
   });
+});
+
+const PORT = Number(process.env.PORT) || 8000;
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
 });
