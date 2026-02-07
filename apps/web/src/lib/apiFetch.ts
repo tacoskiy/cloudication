@@ -12,7 +12,7 @@ type ApiFetchOptions<TBody = unknown> = {
 };
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
 function buildQueryString(query?: QueryParams) {
   if (!query) return "";
