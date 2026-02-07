@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { cloudPostService } from "./cloud-post.service";
-import { CreateCloudPostRequest, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
+import type { CreateCloudPostRequest, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
 import { containsNGWord } from "../../services/text-moderate";
 import { asyncHandler } from "../../lib/asyncHandler";
 

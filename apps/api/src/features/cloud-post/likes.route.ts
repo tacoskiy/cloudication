@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { likesService } from "./likes.service";
-import { ToggleLikeRequest, ToggleLikeResponse } from "@cloudication/shared-types/likes";
+import type { ToggleLikeRequest, ToggleLikeResponse } from "@cloudication/shared-types/likes";
 
 
 const router = Router();

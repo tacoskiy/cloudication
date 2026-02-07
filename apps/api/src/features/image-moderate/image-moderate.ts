@@ -1,4 +1,4 @@
-import { ImageModerateResult } from "@cloudication/shared-types/image-moderate";
+import type { ImageModerateResult } from "@cloudication/shared-types/image-moderate";
 
 const CLOUD_RATIO_THRESHOLD = 0.3;
 

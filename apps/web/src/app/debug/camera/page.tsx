@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ModerateResultModal from "@/features/camera/components/ModerateResultModal";
-import { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
+import type { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
 import Button from "@/features/shared/components/Button";
 
 export default function CameraDebugPage() {

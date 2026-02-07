@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CloudPost } from "@cloudication/shared-types/cloud-post";
+import type { CloudPost } from "@cloudication/shared-types/cloud-post";
 import { apiFetch } from "@/lib/apiFetch";
 import Icon from "@/features/shared/components/Icon";
 import Button from "@/features/shared/components/Button";
@@ -135,9 +135,9 @@ const PostListView = () => {
 
       {/* ポスト詳細モーダル */}
       {selectedPostId && (
-        <PostDetailModal 
-          postId={selectedPostId} 
-          onClose={() => setSelectedPostId(null)} 
+        <PostDetailModal
+          postId={selectedPostId}
+          onClose={() => setSelectedPostId(null)}
         />
       )}
     </div>

@@ -4,7 +4,7 @@ import crypto from "crypto";
 import { analyzeWithAzureVision } from "../../services/azure-vision";
 import { r2TempUpload } from "../../services/cloudflare-r2";
 import { moderateImage } from "./image-moderate";
-import { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
+import type { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
 
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });

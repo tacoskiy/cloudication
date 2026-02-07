@@ -1,6 +1,6 @@
 import Button from "@/features/shared/components/Button";
 import Icon from "@/features/shared/components/Icon";
-import { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
+import type { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
 
 interface ModerationResultViewProps {
   result: ImageModerateResponse | null;

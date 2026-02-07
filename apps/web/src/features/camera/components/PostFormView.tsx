@@ -5,7 +5,7 @@ import Button from "@/features/shared/components/Button";
 import Icon from "@/features/shared/components/Icon";
 import { apiFetch } from "@/lib/apiFetch";
 import { getOrCreateClientId } from "@/lib/cookie";
-import { CreateCloudPostRequest, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
+import type { CreateCloudPostRequest, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
 import PermissionModal from "@/features/shared/components/PermissionModal";
 import { useRouter } from "next/navigation";
 
