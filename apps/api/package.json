@@ -11,5 +11,8 @@
   },
   "include": [
     "src"
-  ]
+  ],
+  "devDependencies": {
+    "@types/node": "^25.2.1"
+  }
 }
