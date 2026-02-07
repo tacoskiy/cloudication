@@ -11,8 +11,9 @@ type ApiFetchOptions<TBody = unknown> = {
   next?: NextFetchRequestConfig;
 };
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+const API_BASE_URL = (
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080"
+).replace(/\/$/, "");
 
 function buildQueryString(query?: QueryParams) {
   if (!query) return "";
@@ -49,7 +50,9 @@ export async function apiFetch<TResponse, TBody = unknown>(
     !isFormData &&
     typeof body === "object";
 
-  const res = await fetch(`${API_BASE_URL}${path}${queryString}`, {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  const res = await fetch(`${API_BASE_URL}${normalizedPath}${queryString}`, {
     method,
     cache,
     next,
