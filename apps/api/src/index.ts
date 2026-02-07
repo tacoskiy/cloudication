@@ -34,6 +34,11 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Routes
+app.get("/", (_req, res) => {
+  console.log("[Healthcheck] Root endpoint hit");
+  res.json({ status: "ok", service: "cloudication-api" });
+});
+
 app.get("/api/hello", (_req, res) => {
   res.json({
     status: "ok",
@@ -59,8 +64,4 @@ const HOST = process.env.HOST || "0.0.0.0";
 
 app.listen(PORT, HOST, () => {
   console.log(`Backend is listening on http://${HOST}:${PORT}`);
-});
-
-app.get("/", (_req, res) => {
-  res.json({ status: "ok", service: "cloudication-api" });
 });
