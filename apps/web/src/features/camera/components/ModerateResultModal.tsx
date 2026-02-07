@@ -1,7 +1,7 @@
 import { useModerateModalFlow } from "../hooks/useModerateModalFlow";
 import ModerationResultView from "./ModerationResultView";
 import PostFormView from "./PostFormView";
-import { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
+import type { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
 import Sheet from "@/features/shared/components/Sheet";
 import { useEffect } from "react";
 

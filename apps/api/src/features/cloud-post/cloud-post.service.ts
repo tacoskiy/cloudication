@@ -1,7 +1,21 @@
-import { CreateCloudPostRequest as CreatePostDto, CloudPost, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
+import type { CreateCloudPostRequest as CreatePostDto, CloudPost, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
+import { Prisma } from "@prisma/client";
 import prisma from "../../lib/prisma";
 import { r2MoveToMain } from "../../services/cloudflare-r2";
 
+
+
+type PostWithRelations = Prisma.CloudPostGetPayload<{
+  include: {
+    location: true;
+    likes: true;
+    _count: {
+      select: {
+        likes: true;
+      };
+    };
+  };
+}>;
 
 export const cloudPostService = {
   async getRecentPosts(hours: number = 24, clientId?: string): Promise<CloudPost[]> {
@@ -32,7 +46,7 @@ export const cloudPostService = {
       },
     });
 
-    return posts.map((post) => ({
+    return posts.map((post: PostWithRelations) => ({
       id: post.id,
       content: post.content,
       image_url: post.image_url,
@@ -75,7 +89,7 @@ export const cloudPostService = {
       likes_count: post._count.likes,
       is_liked: post.likes ? post.likes.length > 0 : false,
       created_at: post.created_at.toISOString(),
-    };
+    } as CloudPost;
   },
 
   async createPost(data: CreatePostDto): Promise<CreateCloudPostResponse> {

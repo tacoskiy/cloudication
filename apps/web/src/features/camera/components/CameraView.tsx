@@ -8,7 +8,7 @@ import Button from "@/features/shared/components/Button";
 
 import { useCameraContext } from "@/features/camera/contexts/useCameraContext";
 import { apiFetch } from "@/lib/apiFetch";
-import { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
+import type { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
 import ModerateResultModal from "./ModerateResultModal";
 import PermissionModal from "@/features/shared/components/PermissionModal";
 import Icon from "@/features/shared/components/Icon";

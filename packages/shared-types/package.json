@@ -1,32 +1,25 @@
 {
   "name": "@cloudication/shared-types",
-  "version": "1.0.0",
-  "main": "dist/index.js",
+  "private": true,
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./dist/index.d.ts"
     },
     "./image-moderate": {
-      "types": "./dist/image-moderate.d.ts",
-      "import": "./dist/image-moderate.js",
-      "require": "./dist/image-moderate.js"
+      "types": "./dist/image-moderate.d.ts"
     },
     "./cloud-post": {
-      "types": "./dist/cloud-post.d.ts",
-      "import": "./dist/cloud-post.js",
-      "require": "./dist/cloud-post.js"
+      "types": "./dist/cloud-post.d.ts"
     },
     "./likes": {
-      "types": "./dist/likes.d.ts",
-      "import": "./dist/likes.js",
-      "require": "./dist/likes.js"
+      "types": "./dist/likes.d.ts"
     }
   },
   "scripts": {
     "build": "tsc"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
 }

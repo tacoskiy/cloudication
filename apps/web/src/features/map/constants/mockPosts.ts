@@ -1,4 +1,4 @@
-import { CloudPost } from "@cloudication/shared-types/cloud-post";
+import type { CloudPost } from "@cloudication/shared-types/cloud-post";
 
 export const MOCK_POSTS: CloudPost[] = [
   // --- 絶景・地方セクション ---

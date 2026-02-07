@@ -6,7 +6,7 @@ import Map, { Marker, MapRef } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { apiFetch } from "@/lib/apiFetch";
 import { getOrCreateClientId } from "@/lib/cookie";
-import { CloudPost } from "@cloudication/shared-types/cloud-post";
+import type { CloudPost } from "@cloudication/shared-types/cloud-post";
 import PostDetailModal from "@/features/posts/components/PostDetailModal";
 import PermissionModal from "@/features/shared/components/PermissionModal";
 import Button from "@/features/shared/components/Button";

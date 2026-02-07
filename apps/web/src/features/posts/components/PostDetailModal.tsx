@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CloudPost } from "@cloudication/shared-types/cloud-post";
+import type { CloudPost } from "@cloudication/shared-types/cloud-post";
 import { ToggleLikeResponse } from "@cloudication/shared-types/likes";
 import { apiFetch } from "@/lib/apiFetch";
 import { getOrCreateClientId } from "@/lib/cookie";

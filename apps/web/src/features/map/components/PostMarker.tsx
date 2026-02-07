@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Marker } from "react-map-gl/mapbox";
-import { CloudPost } from "@cloudication/shared-types/cloud-post";
+import type { CloudPost } from "@cloudication/shared-types/cloud-post";
 
 interface PostMarkerProps {
   post: CloudPost;
