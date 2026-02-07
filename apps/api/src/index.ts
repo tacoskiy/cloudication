@@ -58,5 +58,9 @@ const PORT = Number(process.env.PORT) || 8000;
 const HOST = process.env.HOST || "0.0.0.0";
 
 app.listen(PORT, HOST, () => {
-  console.log(`Backend running on ${HOST}:${PORT}`);
+  console.log(`Backend is listening on http://${HOST}:${PORT}`);
+});
+
+app.get("/", (_req, res) => {
+  res.json({ status: "ok", service: "cloudication-api" });
 });
