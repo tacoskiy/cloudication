@@ -9,6 +9,7 @@ import { getOrCreateClientId } from "@/lib/cookie";
 import type { CloudPost } from "@cloudication/shared-types/cloud-post";
 import PostDetailModal from "@/features/posts/components/PostDetailModal";
 import PermissionModal from "@/features/shared/components/PermissionModal";
+import SystemPermissionModal from "@/features/shared/components/SystemPermissionModal";
 import Button from "@/features/shared/components/Button";
 import PostMarker from "./PostMarker";
 import { MOCK_POSTS } from "../constants/mockPosts";
@@ -32,6 +33,7 @@ export default function MapView() {
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [overlappingPostIds, setOverlappingPostIds] = useState<Set<string>>(new Set());
   const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
+  const [isSystemDenied, setIsSystemDenied] = useState(false);
   const mapRef = useRef<MapRef>(null);
 
   const router = useRouter();
@@ -45,6 +47,12 @@ export default function MapView() {
     if (!force) {
       try {
         const status = await navigator.permissions.query({ name: "geolocation" });
+        if (status.state === "denied") {
+          setIsSystemDenied(true);
+          setIsPermissionModalOpen(true);
+          setLocation(FALLBACK_LOCATION);
+          return;
+        }
         if (status.state !== "granted") {
           setIsPermissionModalOpen(true);
           setLocation(FALLBACK_LOCATION);
@@ -73,9 +81,10 @@ export default function MapView() {
         });
       },
       (err) => {
-        if (err.code === err.PERMISSION_DENIED) {
-          setIsPermissionModalOpen(true);
+        if (err.code === 1) { // 1 is PERMISSION_DENIED
+          setIsSystemDenied(true);
         }
+        setIsPermissionModalOpen(true);
         setLocation(FALLBACK_LOCATION);
       },
       {
@@ -187,12 +196,20 @@ export default function MapView() {
 
   return (
     <>
-      <PermissionModal
-        isOpen={isPermissionModalOpen}
-        onClose={() => setIsPermissionModalOpen(false)}
-        type="location"
-        onRetry={() => requestLocation(true)}
-      />
+      {isSystemDenied ? (
+        <SystemPermissionModal
+          isOpen={isPermissionModalOpen}
+          onClose={() => setIsPermissionModalOpen(false)}
+          type="location"
+        />
+      ) : (
+        <PermissionModal
+          isOpen={isPermissionModalOpen}
+          onClose={() => setIsPermissionModalOpen(false)}
+          type="location"
+          onRetry={() => requestLocation(true)}
+        />
+      )}
       <div className="relative w-full h-[80vh] rounded-[48px] overflow-clip border border-surface/24">
         {/* Guide Dialog */}
         {!selectedPostId && (

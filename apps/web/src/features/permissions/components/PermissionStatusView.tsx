@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { usePermissionStatuses, PermissionStatus } from "../hooks/usePermissionStatuses";
 import Icon from "@/features/shared/components/Icon";
 import Button from "@/features/shared/components/Button";
-import Link from "next/link";
+import PermissionModal from "@/features/shared/components/PermissionModal";
+import SystemPermissionModal from "@/features/shared/components/SystemPermissionModal";
 
 const StatusBadge = ({ status }: { status: PermissionStatus }) => {
   switch (status) {
@@ -42,14 +44,19 @@ const PermissionItem = ({
   icon,
   title,
   description,
-  status
+  status,
+  onClick
 }: {
   icon: string;
   title: string;
   description: string;
-  status: PermissionStatus
+  status: PermissionStatus;
+  onClick: () => void;
 }) => (
-  <div className="group relative w-full p-6 bg-surface rounded-[32px] border border-invert/10 hover:border-invert/20 transition-all">
+  <button
+    onClick={onClick}
+    className="group relative w-full p-6 bg-surface rounded-[32px] border border-invert/10 hover:border-invert/20 transition-all text-left"
+  >
     <div className="flex items-start justify-between gap-4">
       <div className="flex gap-4">
         <div className="w-12 h-12 rounded-2xl bg-brand/10 flex items-center justify-center shrink-0 border border-brand/10 group-hover:scale-105 transition-transform duration-500">
@@ -62,14 +69,64 @@ const PermissionItem = ({
       </div>
       <StatusBadge status={status} />
     </div>
-  </div>
+  </button>
 );
 
 const PermissionStatusView = () => {
-  const { cameraStatus, locationStatus, refresh } = usePermissionStatuses();
+  const {
+    cameraStatus,
+    locationStatus,
+    requestCameraPermission,
+    requestLocationPermission
+  } = usePermissionStatuses();
+
+  const [modalType, setModalType] = useState<"camera" | "location">("camera");
+  const [isSystemModalOpen, setIsSystemModalOpen] = useState(false);
+  const [isExplanatoryModalOpen, setIsExplanatoryModalOpen] = useState(false);
+
+  const handleItemClick = (type: "camera" | "location") => {
+    const status = type === "camera" ? cameraStatus : locationStatus;
+
+    if (status === "prompt") {
+      setModalType(type);
+      setIsExplanatoryModalOpen(true);
+    } else if (status === "denied") {
+      setModalType(type);
+      setIsSystemModalOpen(true);
+    }
+  };
+
+  const handleRetryPermission = async () => {
+    setIsExplanatoryModalOpen(false);
+
+    let success = false;
+    if (modalType === "camera") {
+      success = await requestCameraPermission();
+    } else {
+      success = await requestLocationPermission();
+    }
+
+    // If request failed (denied in native prompt), show the system settings modal
+    if (!success) {
+      setIsSystemModalOpen(true);
+    }
+  };
 
   return (
     <div className="w-full max-w-lg mx-auto flex flex-col gap-8 pb-20">
+      <SystemPermissionModal
+        isOpen={isSystemModalOpen}
+        onClose={() => setIsSystemModalOpen(false)}
+        type={modalType}
+      />
+
+      <PermissionModal
+        isOpen={isExplanatoryModalOpen}
+        onClose={() => setIsExplanatoryModalOpen(false)}
+        type={modalType}
+        onRetry={handleRetryPermission}
+      />
+
       <div className="flex flex-col gap-3 text-center px-6">
         <div className="w-16 h-16 mx-auto mb-2 rounded-[24px] bg-brand flex items-center justify-center shadow-2xl shadow-brand/20">
           <Icon name="cloudication" size={64} className="text-surface" />
@@ -87,22 +144,18 @@ const PermissionStatusView = () => {
           title="カメラ"
           description="雲を撮影するために、カメラへのアクセスが必要です。"
           status={cameraStatus}
+          onClick={() => handleItemClick("camera")}
         />
         <PermissionItem
           icon="location"
           title="位置情報"
           description="自分の近くの雲を表示するために、位置情報の共有が必要です。"
           status={locationStatus}
+          onClick={() => handleItemClick("location")}
         />
       </div>
 
       <div className="flex flex-col gap-4 px-6 items-center">
-        <Button
-          onClick={refresh}
-          label="ステータスを更新"
-          icon="cloudication"
-          className="w-full h-16 rounded-[24px] font-bold bg-brand text-surface hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-brand/20"
-        />
         <p className="text-invert/20 text-[10px] text-center font-medium px-4">
           ※許可を拒否した場合、ブラウザの設定から手動で許可する必要があります。
         </p>

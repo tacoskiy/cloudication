@@ -135,3 +135,88 @@ body {
 .muted-shadow {
   box-shadow: 0 6px 16px var(--color-brand-muted);
 }
+
+@keyframes scatteringBurst {
+  0% {
+    transform: translate(calc(-50% + var(--tw-startX)), calc(-50% + var(--tw-startY))) scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--tw-startX) * 1.2), calc(-50% + var(--tw-startY) * 1.2)) scale(var(--tw-scale)) rotate(var(--tw-rotate));
+  }
+  100% {
+    transform: translate(calc(-50% + var(--tw-translateX)), calc(-50% + var(--tw-translateY) + 200px)) scale(0) rotate(calc(var(--tw-rotate) * 2));
+    opacity: 0;
+  }
+}
+
+@keyframes ringFlare {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+    border-width: 24px;
+    box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.8);
+  }
+  20% {
+    opacity: 1;
+    box-shadow: 0 0 30px 15px rgba(255, 77, 109, 0.6);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(8);
+    opacity: 0;
+    border-width: 0px;
+    box-shadow: 0 0 100px 40px rgba(255, 77, 109, 0);
+  }
+}
+
+@keyframes ringFlareSecondary {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.6;
+    border-width: 40px;
+    border-color: var(--color-warning);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(12);
+    opacity: 0;
+    border-width: 0px;
+  }
+}
+
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, -2px); }
+  50% { transform: translate(2px, 2px); }
+  75% { transform: translate(-2px, 2px); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  15% { transform: scale(2.2) rotate(-15deg); }
+  33% { transform: scale(0.6) rotate(15deg); }
+  50% { transform: scale(1.8) rotate(-10deg); }
+  66% { transform: scale(0.9) rotate(10deg); }
+  85% { transform: scale(1.1) rotate(-5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.animate-scattering-burst {
+  animation: scatteringBurst 0.8s .6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-ring-flare {
+  animation: ringFlare 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-ring-flare-secondary {
+  animation: ringFlareSecondary 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-screen-shake {
+  animation: screenShake 0.2s .6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.animate-pop {
+  animation: pop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}

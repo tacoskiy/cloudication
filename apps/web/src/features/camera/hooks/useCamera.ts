@@ -25,13 +25,13 @@ const useCamera = () => {
   const attachCamera = useCallback(async (
     videoRef: React.RefObject<HTMLVideoElement | null>,
     force = false
-  ) => {
+  ): Promise<boolean> => {
     shouldBeActiveRef.current = true;
 
     // すでに指定されたvideoRefに現在のストリームがセットされている場合は何もしない
     if (videoRef.current?.srcObject === streamRef.current && streamRef.current) {
       setCameraAttached(true);
-      return;
+      return true;
     }
 
     // 自動実行時は granted の場合のみ実行する
@@ -39,7 +39,7 @@ const useCamera = () => {
       const status = await getPermissionStatus();
       if (status !== "granted") {
         if (status === "denied") setIsPermissionDenied(true);
-        return;
+        return false;
       }
     }
 
@@ -58,7 +58,7 @@ const useCamera = () => {
         // 非同期処理の間にデタッチ（アンマウント）されていたら即座に停止する
         if (!shouldBeActiveRef.current) {
           stream.getTracks().forEach(track => track.stop());
-          return;
+          return false;
         }
 
         streamRef.current = stream;
@@ -70,7 +70,9 @@ const useCamera = () => {
         setCameraAttached(true);
         setIsPermissionDenied(false);
         setError(null);
+        return true;
       }
+      return false;
     } catch (err) {
       if (err instanceof DOMException) {
         switch (err.name) {
@@ -85,6 +87,7 @@ const useCamera = () => {
             setError("カメラの起動に失敗しました");
         }
       }
+      return false;
     }
   }, [getPermissionStatus]);
 

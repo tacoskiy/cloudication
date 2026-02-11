@@ -29,6 +29,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     const tags = Array.isArray(analysis?.tags) ? analysis.tags : [];
     const faces = Array.isArray(analysis?.faces) ? analysis.faces : [];
     const cloudRatio = typeof analysis?.cloudRatio === "number" ? analysis.cloudRatio : 0;
+    const skyRatio = typeof analysis?.skyRatio === "number" ? analysis.skyRatio : 0;
     const faceDetected = analysis?.faceDetected === true;
 
     const hasPerson =
@@ -42,6 +43,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     const result = moderateImage({
       cloudRatio,
+      skyRatio,
       hasPerson,
       isAdult: adult.isAdultContent === true,
       isGory: adult.isGoryContent === true,

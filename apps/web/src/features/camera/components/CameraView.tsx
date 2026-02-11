@@ -11,6 +11,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import type { ImageModerateResponse } from "@cloudication/shared-types/image-moderate";
 import ModerateResultModal from "./ModerateResultModal";
 import PermissionModal from "@/features/shared/components/PermissionModal";
+import SystemPermissionModal from "@/features/shared/components/SystemPermissionModal";
 import Icon from "@/features/shared/components/Icon";
 
 const CameraView = () => {
@@ -151,12 +152,25 @@ const CameraView = () => {
   return (
     <div className="w-full h-[80vh] p-3 bg-surface/24 rounded-[48px] overflow-clip border border-invert/48 relative flex flex-col justify-end gap-3">
       <ModerateResultModal result={moderateResult!} onClose={resetCapture} isOpen={isResultModalOpen} />
-      <PermissionModal
-        isOpen={isPermissionModalOpen}
-        onClose={() => setIsPermissionModalOpen(false)}
-        type="camera"
-        onRetry={() => camera.attachCamera(videoRef, true)}
-      />
+      {camera.isPermissionDenied ? (
+        <SystemPermissionModal
+          isOpen={isPermissionModalOpen}
+          onClose={() => setIsPermissionModalOpen(false)}
+          type="camera"
+        />
+      ) : (
+        <PermissionModal
+          isOpen={isPermissionModalOpen}
+          onClose={() => setIsPermissionModalOpen(false)}
+          type="camera"
+          onRetry={async () => {
+            const success = await camera.attachCamera(videoRef, true);
+            if (!success) {
+              setIsPermissionModalOpen(true);
+            }
+          }}
+        />
+      )}
 
       {/* Guide Dialog */}
       {!camera.capturedImage && !isModerating && (

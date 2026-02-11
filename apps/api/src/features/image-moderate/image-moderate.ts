@@ -4,6 +4,7 @@ const CLOUD_RATIO_THRESHOLD = 0.3;
 
 type Input = {
   cloudRatio: number;
+  skyRatio: number;
   hasPerson: boolean;
   isAdult: boolean;
   isGory: boolean;
@@ -17,17 +18,17 @@ export function moderateImage(input: Input): ImageModerateResult {
     return {
       status: "rejected",
       reasons: ["不適切な内容の可能性があります"],
-      suggestions: ["雲を撮影してください"],
-      metrics: { cloudRatio: input.cloudRatio, hasPerson: input.hasPerson },
+      suggestions: ["空や雲を撮影してください"],
+      metrics: { cloudRatio: input.cloudRatio, skyRatio: input.skyRatio, hasPerson: input.hasPerson },
     };
   }
 
-  if (input.cloudRatio < CLOUD_RATIO_THRESHOLD) {
+  if (input.cloudRatio < CLOUD_RATIO_THRESHOLD && input.skyRatio < CLOUD_RATIO_THRESHOLD) {
     return {
       status: "rejected",
-      reasons: ["雲が十分に写っていません"],
-      suggestions: ["雲が主になる構図で撮影してください"],
-      metrics: { cloudRatio: input.cloudRatio, hasPerson: input.hasPerson },
+      reasons: ["空や雲が十分に写っていません"],
+      suggestions: ["空や雲が主になる構図で撮影してください"],
+      metrics: { cloudRatio: input.cloudRatio, skyRatio: input.skyRatio, hasPerson: input.hasPerson },
     };
   }
 
@@ -41,6 +42,6 @@ export function moderateImage(input: Input): ImageModerateResult {
     status: reasons.length > 0 ? "accepted_with_warning" : "accepted",
     reasons,
     suggestions,
-    metrics: { cloudRatio: input.cloudRatio, hasPerson: input.hasPerson },
+    metrics: { cloudRatio: input.cloudRatio, skyRatio: input.skyRatio, hasPerson: input.hasPerson },
   };
 }

@@ -14,7 +14,8 @@ export async function analyzeWithAzureVision(buffer: Buffer, filename?: string) 
        return {
         adult: { isAdultContent: false, isRacyContent: false, isGoryContent: false, adultScore: 0, racyScore: 0, goreScore: 0 },
         faceDetected: false,
-        cloudRatio: 0.0, // No clouds
+        cloudRatio: 0.0,
+        skyRatio: 0.0,
         tags: [{ name: "cat", confidence: 0.99 }, { name: "animal", confidence: 0.9 }],
         faces: [],
       };
@@ -32,6 +33,7 @@ export async function analyzeWithAzureVision(buffer: Buffer, filename?: string) 
       },
       faceDetected: false,
       cloudRatio: 0.95, 
+      skyRatio: 0.9,
       tags: [{ name: "cloud", confidence: 0.99 }, { name: "sky", confidence: 0.9 }],
       faces: [],
     };
@@ -58,6 +60,7 @@ export async function analyzeWithAzureVision(buffer: Buffer, filename?: string) 
   }
 
   const cloudTag = (data.tags || []).find((t: any) => t.name === "cloud");
+  const skyTag = (data.tags || []).find((t: any) => t.name === "sky");
   const faces = data.faces || [];
   const tags = data.tags || [];
 
@@ -65,6 +68,7 @@ export async function analyzeWithAzureVision(buffer: Buffer, filename?: string) 
     adult: data.adult ?? {},
     faceDetected: faces.length > 0,
     cloudRatio: cloudTag ? cloudTag.confidence : 0,
+    skyRatio: skyTag ? skyTag.confidence : 0,
     tags,
     faces,
   };

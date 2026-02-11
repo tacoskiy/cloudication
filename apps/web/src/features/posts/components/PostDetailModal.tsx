@@ -22,6 +22,8 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
   const [isLiking, setIsLiking] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isFlareActive, setIsFlareActive] = useState(false);
+  const [isFlareSecondaryActive, setIsFlareSecondaryActive] = useState(false);
 
   useEffect(() => {
     if (!postId) {
@@ -29,9 +31,13 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
     }
 
     setHasLiked(false);
+    setPost(null);
+    setError(null);
 
     const fetchPost = async () => {
       if (postId.startsWith("mock-")) {
+        // Simulate network delay for mock posts
+        await new Promise(resolve => setTimeout(resolve, 600));
         const mockPost = MOCK_POSTS.find(p => p.id === postId);
         if (mockPost) {
           setPost(mockPost);
@@ -55,7 +61,34 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
   const handleToggleLike = async () => {
     if (!post || isLiking) return;
 
+    const nextLiked = !hasLiked;
+
+    // Trigger flare animation when liking
+    if (nextLiked) {
+      setIsFlareActive(true);
+      setIsFlareSecondaryActive(true);
+
+      setTimeout(() => {
+        setIsFlareActive(false);
+        setIsFlareSecondaryActive(false);
+      }, 1600);
+    }
+
     setIsLiking(true);
+
+    // Handle mock posts
+    if (postId.startsWith("mock-")) {
+      await new Promise(resolve => setTimeout(resolve, 300));
+      const nextLiked = !hasLiked;
+      setPost(prev => prev ? {
+        ...prev,
+        likes_count: prev.likes_count + (nextLiked ? 1 : -1)
+      } : null);
+      setHasLiked(nextLiked);
+      setIsLiking(false);
+      return;
+    }
+
     try {
       const clientId = getOrCreateClientId();
       const result = await apiFetch<ToggleLikeResponse>(`/api/likes/${postId}/like`, {
@@ -75,14 +108,35 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
   };
 
   return (
-    <Sheet isOpen={!!postId} onClose={onClose}>
-      {error || (!post && postId) ? (
+    <Sheet isOpen={!!postId} onClose={onClose} overflowVisible>
+      {error ? (
         <div className="p-12 flex flex-col items-center gap-6">
-          <p className="text-invert/40 font-bold">{error || "読み込み中..."}</p>
+          <p className="text-invert/40 font-bold">{error}</p>
           <Button onClick={onClose} label="閉じる" className="bg-invert text-surface px-8 rounded-full" />
         </div>
+      ) : !post && postId ? (
+        <article className="p-6 flex flex-col gap-6 animate-pulse">
+          {/* Skeleton Image */}
+          <div className="w-full aspect-4/3 bg-invert/5 mask-cloud" />
+
+          {/* Skeleton Info */}
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
+              <div className="h-6 bg-invert/5 rounded-lg w-3/4" />
+              <div className="h-6 bg-invert/5 rounded-lg w-1/2" />
+              <div className="flex items-center gap-4">
+                <div className="h-3 bg-invert/5 rounded-full w-24" />
+                <div className="h-1 w-1 rounded-full bg-invert/5" />
+                <div className="h-3 bg-invert/5 rounded-full w-20" />
+              </div>
+            </div>
+
+            {/* Skeleton Like Button */}
+            <div className="w-full h-20 bg-invert/5 rounded-[24px]" />
+          </div>
+        </article>
       ) : post ? (
-        <article className="p-6 flex flex-col gap-6">
+        <article className="p-6 flex flex-col gap-6 overflow-visible">
           {/* Image Section */}
           <img
             src={post.image_url}
@@ -90,52 +144,60 @@ const PostDetailModal = ({ postId, onClose }: PostDetailModalProps) => {
             className="w-full aspect-4/3 h-auto object-cover mask-cloud shadow-2xl shadow-invert/10"
           />
 
-          {/* Info Section */}
-          <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden">
-            <div className="flex flex-col gap-2">
-              <p className="text-xl text-invert font-medium leading-relaxed">
-                {post.content}
-              </p>
-              <div className="flex items-center gap-4 text-invert/30">
-                <span className="text-xs font-bold">
-                  {new Date(post.created_at).toLocaleString("ja-JP", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+          {/* Info Section (Scrollable) */}
+          <div className="flex flex-col gap-2 overflow-y-auto min-h-0">
+            <p className="text-xl text-invert font-medium leading-relaxed">
+              {post.content}
+            </p>
+            <div className="flex items-center gap-4 text-invert/30">
+              <span className="text-xs font-bold">
+                {new Date(post.created_at).toLocaleString("ja-JP", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+              <div className="h-1 w-1 rounded-full bg-invert/10" />
+              <span className="text-[10px] font-bold tracking-tight">
+                {post.lat?.toFixed(4)}, {post.lng?.toFixed(4)}
+              </span>
+            </div>
+          </div>
+
+          {/* Action Section (Outside scroll for visible overflow) */}
+          <button
+            onClick={handleToggleLike}
+            disabled={isLiking}
+            className={`group relative flex justify-center items-center gap-3 w-full py-6 rounded-[24px] transition-all duration-300 ${isLiking ? 'opacity-50' : 'hover:scale-105 active:scale-95'
+              } ${hasLiked
+                ? 'bg-pink text-surface shadow-lg shadow-pink/20 border-pink'
+                : 'bg-pink/5 border border-pink/10 text-pink hover:bg-pink/10'
+              }`}
+          >
+            {/* Flare Rings */}
+            {isFlareActive && (
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full border-4 border-pink animate-ring-flare pointer-events-none" />
+            )}
+            {isFlareSecondaryActive && (
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full border-2 border-warning animate-ring-flare-secondary pointer-events-none" />
+            )}
+
+            <div className={`transition-transform duration-500 ${hasLiked ? 'scale-110' : 'group-hover:scale-110'} ${hasLiked && !isLiking ? 'animate-pop' : ''}`}>
+              <Icon name="heart" size={28} />
+            </div>
+            <div className="flex flex-col items-start leading-none">
+              <div className="flex items-baseline gap-1">
+                <span className="text-xl font-black tabular-nums">
+                  {post.likes_count}
                 </span>
-                <div className="h-1 w-1 rounded-full bg-invert/10" />
-                <span className="text-[10px] font-bold tracking-tight">
-                  {post.lat?.toFixed(4)}, {post.lng?.toFixed(4)}
+                <span className="text-[11px] font-bold">
+                  いいね！
                 </span>
               </div>
             </div>
-            <button
-              onClick={handleToggleLike}
-              disabled={isLiking}
-              className={`group flex justify-center items-center gap-3 w-full py-6 rounded-[24px] transition-all duration-300 ${isLiking ? 'opacity-50' : 'hover:scale-105 active:scale-95'
-                } ${hasLiked
-                  ? 'bg-pink text-surface shadow-lg shadow-pink/20 border-pink'
-                  : 'bg-pink/5 border border-pink/10 text-pink hover:bg-pink/10'
-                }`}
-            >
-              <div className={`transition-transform duration-500 ${hasLiked ? 'scale-110' : 'group-hover:scale-110'}`}>
-                <Icon name="heart" size={28} />
-              </div>
-              <div className="flex flex-col items-start leading-none">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-black tabular-nums">
-                    {post.likes_count}
-                  </span>
-                  <span className="text-[11px] font-bold">
-                    いいね！
-                  </span>
-                </div>
-              </div>
-            </button>
-          </div>
+          </button>
         </article>
       ) : null}
     </Sheet>

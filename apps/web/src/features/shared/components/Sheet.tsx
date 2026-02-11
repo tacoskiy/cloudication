@@ -10,6 +10,7 @@ interface SheetProps {
   children: ReactNode;
   maxWidth?: string;
   className?: string;
+  overflowVisible?: boolean;
 }
 
 const Sheet = ({
@@ -17,7 +18,8 @@ const Sheet = ({
   onClose,
   children,
   maxWidth = "max-w-xl",
-  className = ""
+  className = "",
+  overflowVisible = false,
 }: SheetProps) => {
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isExiting, setIsExiting] = useState(false);
@@ -41,7 +43,7 @@ const Sheet = ({
   if (!shouldRender) return null;
 
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+    <div className={`fixed inset-0 z-100 w-full h-dvh flex items-center justify-center p-4 sm:p-6 overflow-visible`}>
       {/* Backdrop */}
       <div
         className={`absolute inset-0 bg-invert/64 backdrop-blur-lg ${isExiting ? "animate-backdrop-exit" : "animate-backdrop"}`}
@@ -52,7 +54,7 @@ const Sheet = ({
       <div
         onAnimationEnd={handleAnimationEnd}
         className={`
-          relative w-full ${maxWidth} bg-surface rounded-[42px] shadow-2xl overflow-hidden
+          relative w-full ${maxWidth} bg-surface rounded-[42px] shadow-2xl ${overflowVisible ? 'overflow-visible' : 'overflow-hidden'}
           flex flex-col max-h-[90vh] transition-all duration-300 ease-out
           ${isExiting ? "animate-sheet-exit" : "animate-sheet"}
           ${className}

@@ -15,6 +15,7 @@ export enum ImageModerateReasonCode {
 
 export type ImageModerateMetrics = {
   cloudRatio: number;
+  skyRatio: number;
   hasPerson: boolean;
 };
 

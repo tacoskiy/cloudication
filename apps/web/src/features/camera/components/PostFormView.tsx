@@ -7,6 +7,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import { getOrCreateClientId } from "@/lib/cookie";
 import type { CreateCloudPostRequest, CreateCloudPostResponse } from "@cloudication/shared-types/cloud-post";
 import PermissionModal from "@/features/shared/components/PermissionModal";
+import SystemPermissionModal from "@/features/shared/components/SystemPermissionModal";
 import { useRouter } from "next/navigation";
 
 
@@ -48,6 +49,7 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
   const [error, setError] = useState<string | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
+  const [isSystemDenied, setIsSystemDenied] = useState(false);
 
   const requestLocation = () => {
     if (!navigator.geolocation) {
@@ -63,12 +65,14 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
         });
         setError(null);
         setIsPermissionModalOpen(false);
+        setIsSystemDenied(false);
       },
       (err) => {
         console.error("Geolocation error:", err);
-        if (err.code === err.PERMISSION_DENIED) {
-          setIsPermissionModalOpen(true);
+        if (err.code === 1) { // PERMISSION_DENIED
+          setIsSystemDenied(true);
         }
+        setIsPermissionModalOpen(true);
         setError("位置情報の取得に失敗しました。設定を確認してください。");
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -124,12 +128,20 @@ const PostFormView = ({ imageToken, imageUrl, onBack, onSubmit }: PostFormViewPr
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <PermissionModal
-        isOpen={isPermissionModalOpen}
-        onClose={() => setIsPermissionModalOpen(false)}
-        type="location"
-        onRetry={requestLocation}
-      />
+      {isSystemDenied ? (
+        <SystemPermissionModal
+          isOpen={isPermissionModalOpen}
+          onClose={() => setIsPermissionModalOpen(false)}
+          type="location"
+        />
+      ) : (
+        <PermissionModal
+          isOpen={isPermissionModalOpen}
+          onClose={() => setIsPermissionModalOpen(false)}
+          type="location"
+          onRetry={requestLocation}
+        />
+      )}
 
       <div className="py-2 flex justify-center">
         <h2 className="text-md font-medium text-invert/40">雲にコメントをつけよう</h2>
